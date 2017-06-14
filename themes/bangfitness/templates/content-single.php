@@ -1,23 +1,35 @@
 <?php while (have_posts()) : the_post(); ?>
   <?php $blog_page = get_page_by_path('blog') ?>
-  <article <?php post_class(); ?>>
+  <article <?php post_class(); ?> id='blog-article'>
     <header>
-      <div class="back">
-         <a href="<?php echo get_permalink($blog_page); ?>">&#8592; All Posts</a>
-      </div>
-      <h1 class="entry-title"><?php the_title(); ?></h1>
-      <?php get_template_part('templates/entry-meta'); ?>
+    <?php  
+        if ( has_post_thumbnail()) {
+            $large_image_url = wp_get_attachment_image_src( get_post_thumbnail_id(), 'large');
+            echo '<img src="' . $large_image_url[0] . '" title="' . the_title_attribute('echo=0') . '" >';
+            
+        } 
+    ?>
+        <h1 class="entry-title"><?php the_title(); ?></h1>
+        <div id='entry-details'>
+            <div id='entry-details-container'>
+                <span class="blog-by">
+                    By <?= __('', 'sage'); ?> 
+                    <a href="<?= get_author_posts_url(get_the_author_meta('ID')); ?>" rel="author" class="fn"><?= get_the_author(); ?></a>                    
+                </span>                
+                <span class="blog-details-divider">|</span>                
+                <span class="blog-date" datetime="<?= get_the_time('F j y'); ?>">
+                    <?= get_the_date(); ?>
+                </span>                
+                <span class="blog-details-divider">|</span>
+                <?php echo do_shortcode('[rt_reading_time label="Read Time:" postfix="minutes"]'); ?>
+            </div>
+        </div>        
     </header>
-    <div class="entry-content">
-      <?php the_content(); ?>
-      <p class="byline author vcard"><?= __('', 'sage'); ?> <a href="<?= get_author_posts_url(get_the_author_meta('ID')); ?>" rel="author" class="fn"><?= get_the_author(); ?></a></p>
+    <div class="clear entry-content">      
+      <?php the_content(); ?>      
     </div>
     <footer>
-      <div class="blog-nav">
-        <p><?php previous_post_link('<span>Previous Post</span><br>%link'); ?></p>
-        <p><?php next_post_link('<span>Next Post</span><br>%link'); ?></p>
-      </div>
-      <?php wp_link_pages(['before' => '<nav class="page-nav"><p>' . __('Pages:', 'sage'), 'after' => '</p></nav>']); ?>
+      <?php get_template_part('templates/related-posts'); ?>
     </footer>
   </article>
 <?php endwhile; ?>

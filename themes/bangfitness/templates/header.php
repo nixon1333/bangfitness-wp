@@ -3,7 +3,7 @@
   <?php get_template_part('templates/accordion', 'trigger'); ?>
   <h1><?php the_field('sign_up_form_heading', 'option'); ?></h1>
   <p><?php echo Utils\smallcapsify(get_field('sign_up_form_body', 'option')); ?></p>
-  <?php get_template_part('templates/contact', 'form'); ?>
+  <?php echo do_shortcode('[contact-form-7 id="90" title="Sign Up Form"]'); ?>
 </section>
 <header class="banner site-main" role="banner">
   <div class="container">
