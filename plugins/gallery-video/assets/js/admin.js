@@ -7,23 +7,6 @@ var name_changeTop = function (e) {
 };
 
 jQuery(document).ready(function () {
-    jQuery('#lightbox_type input').change(function () {
-
-        jQuery('#lightbox_type input').parent().removeClass('active');
-        jQuery(this).parent().addClass('active');
-        if(jQuery(this).val() == 'old_type'){
-            jQuery('#lightbox-options-list').addClass('active');
-            jQuery('#new-lightbox-options-list').removeClass('active');
-        }
-        else{
-            jQuery('#lightbox-options-list').removeClass('active');
-            jQuery('#new-lightbox-options-list').addClass('active');
-        }
-        jQuery('#lightbox_type input').prop('checked',false);
-        if(!jQuery(this).prop('checked')){
-            jQuery(this).prop('checked',true);
-        }
-    });
     jQuery('#huge-it-insert-video-button').on('click',function () {
         var add_nonce = jQuery(this).parents('#huge_it_gallery_video_add_videos_wrap').attr('data-add-video-nonce');
         var videoGalleryId = jQuery(this).parents('#huge_it_gallery_video_add_videos_wrap').attr('data-videogallery-id');
@@ -171,7 +154,7 @@ jQuery(document).ready(function () {
         }
     })
     jQuery('#videogallery-unique-options').on('change', function () {
-        jQuery('li[id^="videogallery-current-options"]').each(function () {
+        jQuery('div[id^="videogallery-current-options"]').each(function () {
             if (!jQuery(this).hasClass("active")) {
                 jQuery(this).find('ul li input[name="content_per_page"]').attr('name', '');
                 jQuery(this).find('ul li select[name="display_type"]').attr('name', '');
@@ -267,13 +250,6 @@ jQuery(document).ready(function () {
             jQuery('.video_slider_params').css('display','');
         else
             jQuery('.video_slider_params').css('display','none');
-
-
-        if(jQuery(this).val() == 3 || jQuery(this).val() == 7)
-            jQuery('.autoplay').css('display','none');
-        else
-            jQuery('.autoplay').css('display','');
-
     });
     jQuery('#huge_it_sl_effects').change();
 });

@@ -3,7 +3,7 @@ Contributors: MooveAgency, gaspar.nemes
 Stable tag: trunk
 Tags: xml import, rss import, xml feed import, rss feed import, import
 Requires at least: 3.0.1 or higher
-Tested up to: 4.7.4
+Tested up to: 4.7
 License: GPLv2
 
 This plugin adds the ability to import content from an external XML/RSS file, or from an uploaded XML/RSS.
@@ -35,15 +35,6 @@ This plugin allows you to import categories/taxonomies from the XML file and lin
 
 First you need to have the taxonomies created in WordPress to allow the plugin to import into these taxonomies. By default WordPress has two taxonomies: categories and tags.
 
-**Custom field and ACF support**
-
-You are able to use default custom fields. Also the ACF fields are supported by this plugin. You can use the following type of ACF fields: text, number, textarea, email, password, wysiwyg, image, date_picker, color_picker
-
-**Limit posts**
-
-In the "Import Settings" area you can limit the import. You can use multiple patterns to include posts in the import. Use semicolon to separate the values.
-Eg.: 1-8;10;14-
-
 **Importing and linking multiple taxonomies to one post**
 
 To import and link one post to multiple taxonomies, you need to have an XML element in your selected node with a list of categories separated by commas. These elements will be recognized and imported separately as taxonomy terms.
@@ -62,16 +53,6 @@ This plugin was developed by Moove Agency.
 3. Use the Settings->Moove feed importer screen to configure the plugin
 
 == Changelog ==
-
-= 1.1.2 =
-* Fixed Date format issue
-
-= 1.1.1 =
-* Fixed ACF functions
-
-= 1.1.0 =
-* Added Custom field and ACF support
-* Added post limitation
 
 = 1.0.9 =
 * Fixed "Wrong or unreadable XML file!" error on file upload.

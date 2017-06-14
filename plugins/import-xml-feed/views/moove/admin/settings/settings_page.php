@@ -10,30 +10,20 @@
         } // end if
     ?>
     <h2 class="nav-tab-wrapper">
-        <?php ob_start(); ?>
-
-        <a href="?page=moove-importer&tab=feed_importer" class="nav-tab <?php echo $active_tab == 'feed_importer' || $active_tab === 'template_view' ? 'nav-tab-active' : ''; ?>">
+        <a href="?page=moove-importer&tab=feed_importer" class="nav-tab <?php echo $active_tab == 'feed_importer' ? 'nav-tab-active' : ''; ?>">
             <?php _e('Feed Import','moove'); ?>
         </a>
-
-        <?php
-            $tabs = ob_get_clean();
-            echo $tabs;
-            do_action( 'moove_importer_addons_tabs', $tabs, $active_tab );
-        ?>
         <a href="?page=moove-importer&tab=plugin_documentation" class="nav-tab <?php echo $active_tab == 'plugin_documentation' ? 'nav-tab-active' : ''; ?>">
             <?php _e('Documentation','moove'); ?>
         </a>
-
     </h2>
-    <div class="moove-form-container <?php echo $active_tab; ?> <?php echo $active_tab == 'template_view' ? 'feed_importer' : ''; ?>">
+    <div class="moove-form-container <?php echo $active_tab; ?>">
         <?php
-            $content = array(
-                'tab'   => $active_tab,
-                'data'  => $data
-            );
-            do_action( 'moove_importer_addons_tab_content', $content );
-        ?>
+        if( $active_tab == 'feed_importer' ) :
+            echo Moove_Importer_View::load( 'moove.admin.settings.post_type', $data );
+        elseif( $active_tab == 'plugin_documentation' ):
+            echo Moove_Importer_View::load( 'moove.admin.settings.documentation' , null );
+        endif; ?>
     </div>
     <!-- moove-form-container -->
 </div>

@@ -15,7 +15,7 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 		$gallery_video_save_data_nonce = wp_create_nonce( 'gallery_video_save_data_nonce' . $row->id );
 		?>
 		<div style="clear: both;"></div>
-		<form action="admin.php?page=video_galleries_huge_it_video_gallery&id=<?php echo $row->id; ?>&save_data_nonce=<?php echo esc_attr($gallery_video_save_data_nonce);?>" method="post"
+		<form action="admin.php?page=video_galleries_huge_it_video_gallery&id=<?php echo $row->id; ?>&save_data_nonce=<?php echo $gallery_video_save_data_nonce;?>" method="post"
 		      name="adminForm" id="adminForm">
 
 			<div id="poststuff">
@@ -25,10 +25,11 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 						<?php
 						foreach ( $rowsld as $rowsldires ) {
 							if ( $rowsldires->id != $row->id ) {
+								$gallery_video_save_data_nonce = wp_create_nonce( 'huge_it_gallery_video_nonce' . $rowsldires->id );
 								?>
 								<li>
 									<a href="#"
-									   onclick="window.location.href='admin.php?page=video_galleries_huge_it_video_gallery&task=edit_cat&id=<?php echo esc_attr($rowsldires->id); ?>'"><?php echo $rowsldires->name; ?></a>
+									   onclick="window.location.href='admin.php?page=video_galleries_huge_it_video_gallery&task=edit_cat&id=<?php echo $rowsldires->id; ?>&huge_it_gallery_video_nonce=<?php echo $gallery_video_save_data_nonce;?>'"><?php echo $rowsldires->name; ?></a>
 								</li>
 								<?php
 							} else { ?>
@@ -46,7 +47,7 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 						}
 						?>
 						<li class="add-new">
-							<a onclick="window.location.href='admin.php?page=video_galleries_huge_it_video_gallery&amp;task=add_cat&huge_it_gallery_video_nonce_add_gallery_video=<?php echo esc_attr($huge_it_gallery_video_nonce_add_gallery_video); ?>'">+</a>
+							<a onclick="window.location.href='admin.php?page=video_galleries_huge_it_video_gallery&amp;task=add_cat&huge_it_gallery_video_nonce_add_gallery_video=<?php echo $huge_it_gallery_video_nonce_add_gallery_video; ?>'">+</a>
 						</li>
 					</ul>
 				</div>
@@ -58,7 +59,7 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 								<h3>Videos</h3>
 								<a href="#TB_inline?width=700&height=500&inlineId=huge_it_gallery_video_add_videos"
 								    class="button button-primary add-video-slide thickbox"
-									data-add-video-nonce="<?php echo esc_attr($add_video_nonce); ?>"
+									data-add-video-nonce="<?php echo $add_video_nonce; ?>"
 								   data-videogallery-id="<?php echo $row->id; ?>">
 									<span class="wp-media-buttons-icon"></span><?php _e('Add Video','gallery-video'); ?>
 								</a>
@@ -91,15 +92,15 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 													if ( strpos( $rowimages->image_url, 'youtube' ) !== false || strpos( $rowimages->image_url, 'youtu' ) !== false ) {
 														$liclass         = "youtube";
 														$video_thumb_url = get_youtube_id_from_url( $rowimages->image_url );
-														$thumburl        = '<img src="//img.youtube.com/vi/' . $video_thumb_url . '/mqdefault.jpg" alt="" />';
+														$thumburl        = '<img src="http://img.youtube.com/vi/' . $video_thumb_url . '/mqdefault.jpg" alt="" />';
 													} else if ( strpos( $rowimages->image_url, 'vimeo' ) !== false ) {
 														$liclass  = "vimeo";
 														$vimeo    = $rowimages->image_url;
 														$imgid    = explode( "/", $vimeo );
 														$imgid    = end( $imgid );
-														$hash     = @unserialize( wp_remote_fopen( $protocol . "vimeo.com/api/v2/video/" . $imgid . ".php" ) );
+														$hash     = unserialize( wp_remote_fopen( $protocol . "vimeo.com/api/v2/video/" . $imgid . ".php" ) );
 														$imgsrc   = $hash[0]['thumbnail_large'];
-														$thumburl = '<img src="' . $imgsrc  . '" alt="" />';
+														$thumburl = '<img src="' . esc_url( $imgsrc ) . '" alt="" />';
 													}
 												} else {
 													if ( strpos( $rowimages->image_url, 'youtube' ) !== false || strpos( $rowimages->image_url, 'youtu' ) !== false ) {
@@ -107,14 +108,14 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 													} else if ( strpos( $rowimages->image_url, 'vimeo' ) !== false ) {
 														$liclass = "vimeo";
 													}
-													$thumburl = '<img src="' .  $rowimages->thumb_url . '" alt="" />';
+													$thumburl = '<img src="' . esc_url( $rowimages->thumb_url ) . '" alt="" />';
 												}
 												?>
 												<div class="image-container">
 													<div class="thumb_wrapper">
 														<?php echo $thumburl; ?>
 													</div>
-													<div class="play-icon <?php echo esc_attr($liclass); ?>"></div>
+													<div class="play-icon <?php echo $liclass; ?>"></div>
 
 													<div>
 														<input type="hidden" name="imagess<?php echo $rowimages->id; ?>"
@@ -257,97 +258,97 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="side-sortables" class="meta-box-sortables ui-sortable">
 							<div id="videogallery-unique-options" class="postbox">
-								<h3 class="hndle"><span><?php _e('Video Gallery Custom Options', 'gallery-video');?></span></h3>
+								<h3 class="hndle"><span>Video Gallery Custom Options</span></h3>
 								<ul id="videogallery-unique-options-list">
 									<li>
-										<label for="huge_it_videogallery_name"><?php _e('Gallery Name', 'gallery-video');?></label>
+										<label for="huge_it_videogallery_name">Gallery Name</label>
 										<input type="text" name="name" id="huge_it_videogallery_name"
 										       value="<?php echo esc_html( stripslashes( $row->name ) ); ?>"
 										       onkeyup="name_changeRight(this)">
 									</li>
 									<li>
-										<label for="huge_it_sl_effects"><?php _e('Views', 'gallery-video');?></label>
+										<label for="huge_it_sl_effects">Views</label>
 										<select name="huge_it_sl_effects" id="huge_it_sl_effects">
 											<option <?php if ( $row->huge_it_sl_effects == '0' ) {
 												echo 'selected';
-											} ?> value="0"><?php _e('Video Gallery/Content-Popup', 'gallery-video');?>
+											} ?> value="0">Video Gallery/Content-Popup
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '1' ) {
 												echo 'selected';
-											} ?> value="1"><?php _e('Content Video Slider', 'gallery-video');?>
+											} ?> value="1">Content Video Slider
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '5' ) {
 												echo 'selected';
-											} ?> value="5"><?php _e('Lightbox-Video Gallery', 'gallery-video');?>
+											} ?> value="5">Lightbox-Video Gallery
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '3' ) {
 												echo 'selected';
-											} ?> value="3"><?php _e('Video Slider', 'gallery-video');?>
+											} ?> value="3">Video Slider
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '4' ) {
 												echo 'selected';
-											} ?> value="4"><?php _e('Thumbnails View', 'gallery-video');?>
+											} ?> value="4">Thumbnails View
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '6' ) {
 												echo 'selected';
-											} ?> value="6"><?php _e('Justified', 'gallery-video');?>
+											} ?> value="6">Justified
 											</option>
 											<option <?php if ( $row->huge_it_sl_effects == '7' ) {
 												echo 'selected';
-											} ?> value="7"><?php _e('Blog Style Gallery', 'gallery-video');?>
+											} ?> value="7">Blog Style Gallery
 											</option>
 										</select>
 									</li>
-									<li id="videogallery-current-options-0"
+									<div id="videogallery-current-options-0"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 0 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="view4">
 											<li>
-												<label for="display_type"><?php _e('Displaying Content', 'gallery-video');?></label>
+												<label for="display_type">Displaying Content</label>
 												<select id="display_type" name="display_type">
 
 													<option <?php if ( $row->display_type == 0 ) {
 														echo 'selected';
-													} ?> value="0"><?php _e('Pagination', 'gallery-video');?>
+													} ?> value="0">Pagination
 													</option>
 													<option <?php if ( $row->display_type == 1 ) {
 														echo 'selected';
-													} ?> value="1"><?php _e('Load More', 'gallery-video');?>
+													} ?> value="1">Load More
 													</option>
 													<option <?php if ( $row->display_type == 2 ) {
 														echo 'selected';
-													} ?> value="2"><?php _e('Show All', 'gallery-video');?>
+													} ?> value="2">Show All
 													</option>
 												</select>
 											</li>
 											<li id="content_per_page">
-												<label for="content_per_page"><?php _e('Videos Per Page', 'gallery-video');?></label>
+												<label for="content_per_page">Videos Per Page</label>
 												<input type="text" name="content_per_page" id="content_per_page"
 												       value="<?php echo esc_html( stripslashes( $row->content_per_page ) ); ?>"
 												       class="text_area"/>
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-1"
+									</div>
+									<div id="videogallery-current-options-1"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 1 ) {
 										     echo ' active';
 									     } ?>">
 										<ul>
 											<li>
-												<label for="sl_pausetime"><?php _e('Pause time', 'gallery-video');?></label>
+												<label for="sl_pausetime">Pause time</label>
 												<input type="text" name="sl_pausetime" id="sl_pausetime"
 												       value="<?php echo absint( $row->description ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="sl_changespeed"><?php _e('Change speed', 'gallery-video');?></label>
+												<label for="sl_changespeed">Change speed</label>
 												<input type="text" name="sl_changespeed" id="sl_changespeed"
 												       value="<?php echo absint( $row->param ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="pause_on_hover"><?php _e('Pause on hover', 'gallery-video');?></label>
+												<label for="pause_on_hover">Pause on hover</label>
 												<input type="hidden" value="off" name="pause_on_hover"/>
 												<input type="checkbox" name="pause_on_hover" value="on"
 												       id="pause_on_hover" <?php if ( $row->pause_on_hover == 'on' ) {
@@ -364,26 +365,26 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 												} ?> />
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-3"
+									</div>
+									<div id="videogallery-current-options-3"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 3 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="slider-unique-options-list">
 											<li>
-												<label for="sl_width"><?php _e('Width', 'gallery-video');?></label>
+												<label for="sl_width">Width</label>
 												<input type="text" name="sl_width" id="sl_width"
 												       value="<?php echo absint( $row->sl_width ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="sl_height"><?php _e('Height', 'gallery-video');?></label>
+												<label for="sl_height">Height</label>
 												<input type="text" name="sl_height" id="sl_height"
 												       value="<?php echo absint( $row->sl_height ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="pause_on_hover"><?php _e('Pause on hover', 'gallery-video');?></label>
+												<label for="pause_on_hover">Pause on hover</label>
 												<input type="hidden" value="off" name="pause_on_hover"/>
 												<input type="checkbox" name="pause_on_hover" value="on"
 												       id="pause_on_hover" <?php if ( $row->pause_on_hover == 'on' ) {
@@ -391,198 +392,185 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 												} ?> />
 											</li>
 											<li>
-												<label for="videogallery_list_effects_s"><?php _e('Effects', 'gallery-video');?></label>
+												<label for="videogallery_list_effects_s">Effects</label>
 												<select name="videogallery_list_effects_s"
 												        id="videogallery_list_effects_s">
 													<option <?php if ( $row->videogallery_list_effects_s == 'none' ) {
 														echo 'selected';
-													} ?> value="none"><?php _e('None', 'gallery-video');?>
+													} ?> value="none">None
 													</option>
 													<option <?php if ( $row->videogallery_list_effects_s == 'cubeH' ) {
 														echo 'selected';
-													} ?> value="cubeH"><?php _e('Cube Horizontal', 'gallery-video');?>
+													} ?> value="cubeH">Cube Horizontal
 													</option>
 													<option <?php if ( $row->videogallery_list_effects_s == 'cubeV' ) {
 														echo 'selected';
-													} ?> value="cubeV"><?php _e('Cube Vertical', 'gallery-video');?>
+													} ?> value="cubeV">Cube Vertical
 													</option>
 													<option <?php if ( $row->videogallery_list_effects_s == 'fade' ) {
 														echo 'selected';
-													} ?> value="fade"><?php _e('Fade', 'gallery-video');?>
+													} ?> value="fade">Fade
 													</option>
 												</select>
 											</li>
 
 											<li>
-												<label for="sl_pausetime"><?php _e('Pause time', 'gallery-video');?></label>
+												<label for="sl_pausetime">Pause time</label>
 												<input type="text" name="sl_pausetime" id="sl_pausetime"
 												       value="<?php echo absint( $row->description ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="sl_changespeed"><?php _e('Change speed', 'gallery-video');?></label>
+												<label for="sl_changespeed">Change speed</label>
 												<input type="text" name="sl_changespeed" id="sl_changespeed"
 												       value="<?php echo absint( $row->param ); ?>"
 												       class="text_area"/>
 											</li>
 											<li>
-												<label for="slider_position"><?php _e('Slider Position', 'gallery-video');?></label>
+												<label for="slider_position">Slider Position</label>
 												<select name="sl_position" id="slider_position">
 													<option <?php if ( $row->sl_position == 'left' ) {
 														echo 'selected';
-													} ?> value="left"><?php _e('Left', 'gallery-video');?>
+													} ?> value="left">Left
 													</option>
 													<option <?php if ( $row->sl_position == 'right' ) {
 														echo 'selected';
-													} ?> value="right"><?php _e('Right', 'gallery-video');?>
+													} ?> value="right">Right
 													</option>
 													<option <?php if ( $row->sl_position == 'center' ) {
 														echo 'selected';
-													} ?> value="center"><?php _e('Center', 'gallery-video');?>
+													} ?> value="center">Center
 													</option>
 												</select>
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-4"
+									</div>
+									<!-- ///////////////////////////////////////////////////////// -->
+									<div id="videogallery-current-options-4"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 4 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="view4">
 											<li>
-												<label for="display_type"><?php _e('Displaying Content', 'gallery-video');?></label>
+												<label for="display_type">Displaying Content</label>
 												<select id="display_type" name="display_type">
 
 													<option <?php if ( $row->display_type == 0 ) {
 														echo 'selected';
-													} ?> value="0"><?php _e('Pagination', 'gallery-video');?>
+													} ?> value="0">Pagination
 													</option>
 													<option <?php if ( $row->display_type == 1 ) {
 														echo 'selected';
-													} ?> value="1"><?php _e('Load More', 'gallery-video');?>
+													} ?> value="1">Load More
 													</option>
 													<option <?php if ( $row->display_type == 2 ) {
 														echo 'selected';
-													} ?> value="2"><?php _e('Show All', 'gallery-video');?>
+													} ?> value="2">Show All
 													</option>
 												</select>
 											</li>
 											<li id="content_per_page">
-												<label for="content_per_page"><?php _e('Videos Per Page', 'gallery-video');?></label>
+												<label for="content_per_page">Videos Per Page</label>
 												<input type="text" name="content_per_page" id="content_per_page"
 												       value="<?php echo esc_html( stripslashes( $row->content_per_page ) ); ?>"
 												       class="text_area"/>
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-5"
+									</div>
+									<div id="videogallery-current-options-5"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 5 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="view4">
 											<li>
-												<label for="display_type"><?php _e('Displaying Content', 'gallery-video');?></label>
+												<label for="display_type">Displaying Content</label>
 												<select id="display_type" name="display_type">
 													<option <?php if ( $row->display_type == 0 ) {
 														echo 'selected';
-													} ?> value="0"><?php _e('Pagination', 'gallery-video');?>
+													} ?> value="0">Pagination
 													</option>
 													<option <?php if ( $row->display_type == 1 ) {
 														echo 'selected';
-													} ?> value="1"><?php _e('Load More', 'gallery-video');?>
+													} ?> value="1">Load More
 													</option>
 													<option <?php if ( $row->display_type == 2 ) {
 														echo 'selected';
-													} ?> value="2"><?php _e('Show All', 'gallery-video');?>
+													} ?> value="2">Show All
 													</option>
 												</select>
 											</li>
 											<li id="content_per_page">
-												<label for="content_per_page"><?php _e('Videos Per Page', 'gallery-video');?></label>
+												<label for="content_per_page">Videos Per Page</label>
 												<input type="text" name="content_per_page" id="content_per_page"
 												       value="<?php echo esc_html( stripslashes( $row->content_per_page ) ); ?>"
 												       class="text_area"/>
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-6"
+									</div>
+									<div id="videogallery-current-options-6"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 6 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="view4">
 											<li>
-												<label for="display_type"><?php _e('Displaying Content', 'gallery-video');?></label>
+												<label for="display_type">Displaying Content</label>
 												<select id="display_type" name="display_type">
 
 													<option <?php if ( $row->display_type == 0 ) {
 														echo 'selected';
-													} ?> value="0"><?php _e('Pagination', 'gallery-video');?>
+													} ?> value="0">Pagination
 													</option>
 													<option <?php if ( $row->display_type == 1 ) {
 														echo 'selected';
-													} ?> value="1"><?php _e('Load More', 'gallery-video');?>
+													} ?> value="1">Load More
 													</option>
 													<option <?php if ( $row->display_type == 2 ) {
 														echo 'selected';
-													} ?> value="2"><?php _e('Show All', 'gallery-video');?>
+													} ?> value="2">Show All
 													</option>
 												</select>
 											</li>
 											<li id="content_per_page">
-												<label for="content_per_page"><?php _e('Videos Per Page', 'gallery-video');?></label>
+												<label for="content_per_page">Videos Per Page</label>
 												<input type="text" name="content_per_page" id="content_per_page"
 												       value="<?php echo esc_html( stripslashes( $row->content_per_page ) ); ?>"
 												       class="text_area"/>
 											</li>
 										</ul>
-									</li>
-									<li id="videogallery-current-options-7"
+									</div>
+									<div id="videogallery-current-options-7"
 									     class="videogallery-current-options <?php if ( $row->huge_it_sl_effects == 7 ) {
 										     echo ' active';
 									     } ?>">
 										<ul id="view7">
 											<li>
-												<label for="display_type"><?php _e('Displaying Content', 'gallery-video');?></label>
+												<label for="display_type">Displaying Content</label>
 												<select id="display_type" name="display_type">
 
 													<option <?php if ( $row->display_type == 0 ) {
 														echo 'selected';
-													} ?> value="0"><?php _e('Pagination', 'gallery-video');?>
+													} ?> value="0">Pagination
 													</option>
 													<option <?php if ( $row->display_type == 1 ) {
 														echo 'selected';
-													} ?> value="1"><?php _e('Load More', 'gallery-video');?>
+													} ?> value="1">Load More
 													</option>
 													<option <?php if ( $row->display_type == 2 ) {
 														echo 'selected';
-													} ?> value="2"><?php _e('Show All', 'gallery-video');?>
+													} ?> value="2">Show All
 													</option>
 												</select>
 											</li>
 											<li id="content_per_page">
-												<label for="content_per_page"><?php _e('Videos Per Page', 'gallery-video');?></label>
+												<label for="content_per_page">Videos Per Page</label>
 												<input type="text" name="content_per_page" id="content_per_page"
 												       value="<?php echo esc_html( stripslashes( $row->content_per_page ) ); ?>"
 												       class="text_area"/>
 											</li>
 										</ul>
-									</li>
-									<li>
-										<label for="disable_related"><?php _e('Disable Related Videos', 'gallery-video' ); ?></label>
-										<input type="checkbox" id="disable_related" name="disable_related" value="on" disabled>
-										<a class="video-pro-link probuttonlink" href="http://huge-it.com/video-gallery/" target="_blank"><span class="video-pro-icon"></span></a>
-									</li>
+									</div>
 
-                                    <li class="autoplay">
-
-                                        <label for="autoplay"><?php _e('Pop-Up Autoplay', 'gallery-video' ); ?></label>
-                                        <input type="checkbox" id="autoplay" name="autoplay" value="on" disabled>
-                                        <a class="video-pro-link probuttonlink" href="http://huge-it.com/video-gallery/" target="_blank"><span class="video-pro-icon"></span></a>
-
-                                    </li>
-
-
-                                </ul>
+								</ul>
 								<div id="major-publishing-actions">
 									<div id="publishing-action">
 										<input type="button" onclick="submitbutton('apply')" value="Save Video Gallery"
@@ -597,15 +585,15 @@ $add_video_nonce                               = wp_create_nonce( 'huge_it_galle
 									<ul>
 										<li rel="tab-1" class="selected">
 											<h4>Shortcode</h4>
-											<p><?php _e('Copy &amp; paste the shortcode directly into any WordPress post or
-												page.', 'gallery-video');?></p>
+											<p>Copy &amp; paste the shortcode directly into any WordPress post or
+												page.</p>
 											<textarea class="full"
 											          readonly="readonly">[huge_it_videogallery id="<?php echo $row->id; ?>"]</textarea>
 										</li>
 										<li rel="tab-2">
 											<h4>Template Include</h4>
-											<p><?php _e('Copy &amp; paste this code into a template file to include the slideshow
-												within your theme.', 'gallery-video');?></p>
+											<p>Copy &amp; paste this code into a template file to include the slideshow
+												within your theme.</p>
 											<textarea class="full" readonly="readonly">&lt;?php echo do_shortcode("[huge_it_videogallery id='<?php echo $row->id; ?>']"); ?&gt;</textarea>
 										</li>
 									</ul>

@@ -153,11 +153,5 @@
 		clear:both;
 	}
 }
-@media only screen and (max-width: 2000px) and (min-width: 500px) {
-    #main-slider_<?php echo $gallery_videoID; ?> .slider-content-wrapper .image-block_<?php echo $gallery_videoID; ?>,#main-slider_<?php echo $gallery_videoID; ?> .slider-content-wrapper .right-block {
-        width:100%;
-        display:block;
-        float:none;
-        clear:both;
-    }
+
 </style>

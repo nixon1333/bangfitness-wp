@@ -17,11 +17,7 @@ function Gallery_Video_Thumbnails(id) {
     _this.contentPerPage = _this.content.attr('data-gallery-video-perpage');
 
     _this.addEventListeners = function () {
-
-      //  if (parseInt(_this.content.find(".pagenum:last").val()) == parseInt(_this.container.find("#total").val())) {  _this.loadMoreBtn.hide();}
-
         _this.loadMoreBtn.on('click', _this.loadMoreBtnClick);
-
     };
     _this.loadMoreBtnClick = function () {
         var thumbnailLoadNonce = jQuery(this).attr('data-thumbnail-load-nonce');
@@ -31,49 +27,43 @@ function Gallery_Video_Thumbnails(id) {
             var galleryVideoId = _this.galleryVideoId;
             var thumbtext = param_obj.gallery_video_thumb_view_text;
             _this.getResult(pagenum, perpage, galleryVideoId, thumbtext, thumbnailLoadNonce);
-        }
-        else {
+        } else {
             _this.loadMoreBtn.hide();
         }
         return false;
     };
     _this.getResult = function (pagenum, perpage, galleryVideoId, thumbtext, thumbnailLoadNonce) {
-        if (_this.content.find(".pagenum:last").val() == _this.content.find("#total").val()) {
-            _this.loadMoreBtn.hide();
-        }else{
-            var data = {
-                action: "huge_it_gallery_video_front_end_ajax",
-                task: 'load_videos_thumbnail',
-                page: pagenum,
-                perpage: perpage,
-                galleryVideoId: galleryVideoId,
-                thumbtext: thumbtext,
-                galleryVideoThumbnailLoadNonce: thumbnailLoadNonce
-            };
-            _this.loadingIcon.show();
-            _this.loadMoreBtn.hide();
-            jQuery.post(adminUrl, data, function (response) {
-                    if(response.success) {
-                        var $objnewitems = jQuery(response.success);
-                        _this.container.append($objnewitems);
-                        _this.loadMoreBtn.show();
-                        _this.loadingIcon.hide();
-                        if (_this.content.find(".pagenum:last").val() == _this.content.find("#total").val()) {
-                            _this.loadMoreBtn.hide();
-                        }
-                        galleryVideolightboxInit();
-                        setTimeout(function () {
-                            if (param_obj.gallery_video_video_natural_size_thumbnail == 'natural') {
-                                _this.naturalImageThumb();
-                            }
-                        }, 200);
-                    } else {
-                        alert("no");
+        var data = {
+            action: "huge_it_gallery_video_front_end_ajax",
+            task: 'load_videos_thumbnail',
+            page: pagenum,
+            perpage: perpage,
+            galleryVideoId: galleryVideoId,
+            thumbtext: thumbtext,
+            galleryVideoThumbnailLoadNonce: thumbnailLoadNonce
+        };
+        _this.loadingIcon.show();
+        _this.loadMoreBtn.hide();
+        jQuery.post(adminUrl, data, function (response) {
+         if(response.success) {
+                    var $objnewitems = jQuery(response.success);
+                    _this.container.append($objnewitems);
+                    _this.loadMoreBtn.show();
+                    _this.loadingIcon.hide();
+                    if (_this.content.find(".pagenum:last").val() == _this.content.find("#total").val()) {
+                        _this.loadMoreBtn.hide();
                     }
+                    galleryVideolightboxInit();
+                    setTimeout(function () {
+                        if (param_obj.gallery_video_video_natural_size_thumbnail == 'natural') {
+                            _this.naturalImageThumb();
+                        }
+                    }, 200);
+                } else {
+                    alert("no");
                 }
-                , "json");
-        }
-
+            }
+            , "json");
     };
     _this.naturalImageThumb = function () {
         _this.container.find(".huge_it_big_li img").each(function (i, img) {

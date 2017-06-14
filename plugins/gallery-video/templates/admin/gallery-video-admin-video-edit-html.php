@@ -7,7 +7,7 @@ $insert_new_video_nonce = wp_create_nonce('insert_new_video_nonce');
 <div id="huge_it_gallery_video_edit_videos" style="display:none;">
     <h1><?php echo __('Update video', 'gallery-video'); ?></h1>
     <form method="post" id="form-edit-video" data-gallery-video-id="" data-video-id=""
-          data-video-edit-nonce="<?php echo esc_attr($gallery_video_edit_video_nonce); ?>">
+          data-video-edit-nonce="<?php echo $gallery_video_edit_video_nonce; ?>">
         <div class="iframe-text-area">
             <iframe class="gallery-video-iframe-area" src="" frameborder="0"
                     allowfullscreen></iframe>
@@ -16,7 +16,7 @@ $insert_new_video_nonce = wp_create_nonce('insert_new_video_nonce');
             <input type="text" id="edit_video_input" name="edit_video_input" value=""
                    placeholder="New video url"/><br/>
         </div>
-        <a class='button-primary set-new-video' data-insert-new-video-nonce="<?php echo esc_attr($insert_new_video_nonce); ?>"><?php echo __('See New Video', 'gallery-video'); ?></a>
+        <a class='button-primary set-new-video' data-insert-new-video-nonce="<?php echo $insert_new_video_nonce; ?>"><?php echo __('See New Video', 'gallery-video'); ?></a>
         <a class='button-primary edit-video-button'
            id='huge-it-edit-video-button'><?php echo __('Insert Video', 'gallery-video'); ?></a>
     </form>

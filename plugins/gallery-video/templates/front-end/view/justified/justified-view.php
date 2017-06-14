@@ -1,42 +1,40 @@
-<div id="my_video_gallery_wrapper_<?php echo esc_attr($gallery_videoID); ?>" class="clearfix gallery-video-content"
-     data-gallery-video-id="<?php echo esc_attr($gallery_videoID); ?>" data-gallery-video-perpage="<?php echo esc_attr($num); ?>">
-	<div id="my_video_gallery_<?php echo esc_attr($gallery_videoID); ?>"
-	     class="clearfix my_video_gallery view-<?php echo esc_attr($view_slug); ?>">
-		<input type="hidden" id="total" value="<?php echo esc_attr($total); ?>"/>
+<div id="my_video_gallery_wrapper_<?php echo $gallery_videoID; ?>" class="clearfix gallery-video-content"
+     data-gallery-video-id="<?php echo $gallery_videoID; ?>" data-gallery-video-perpage="<?php echo $num; ?>">
+	<div id="my_video_gallery_<?php echo $gallery_videoID; ?>"
+	     class="clearfix my_video_gallery view-<?php echo $view_slug; ?>">
+		<input type="hidden" id="total" value="<?php echo $total; ?>"/>
 		<?php
 		foreach ( $page_videos as $key => $row ) {
 			$videourl = gallery_video_get_video_id_from_url( $row->image_url );
 			if ( $videourl[1] == 'youtube' ) {
 				if ( empty( $row->thumb_url ) ) {
-					$thumb_pic = '//img.youtube.com/vi/' . esc_attr($videourl[0]) . '/mqdefault.jpg';
+					$thumb_pic = '//img.youtube.com/vi/' . $videourl[0] . '/mqdefault.jpg';
 				} else {
 					$thumb_pic = $row->thumb_url;
 				}
 				?>
-				<a class="vyoutube huge_it_videogallery_item group<?php echo esc_attr($gallery_videoID); ?>"
-				   href="<?php echo esc_url("//www.youtube.com/embed/". $videourl[0]); ?>"
-                   data-description="<?php echo str_replace('__5_5_5__', '%', $row->description); ?>"
-                   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>" data-id="<?php echo esc_attr($row->id); ?>">
+				<a class="vyoutube huge_it_videogallery_item group1"
+				   href="https://www.youtube.com/embed/<?php echo $videourl[0]; ?>"
+				   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>" data-id="<?php echo $row->id; ?>">
 					<img src="<?php echo esc_attr( $thumb_pic ); ?>"
 					     alt="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>"/>
 					<div class="play-icon <?php echo $videourl[1]; ?>-icon"></div>
 				</a>
 				<input type="hidden" class="pagenum" value="1"/>
 			<?php } else {
-				$hash = @unserialize( wp_remote_fopen(esc_url( $protocol . "vimeo.com/api/v2/video/" . $videourl[0] . ".php" )) );
+				$hash = unserialize( wp_remote_fopen( $protocol . "vimeo.com/api/v2/video/" . $videourl[0] . ".php" ) );
 				if ( empty( $row->thumb_url ) ) {
 					$imgsrc = $hash[0]['thumbnail_large'];
 				} else {
 					$imgsrc = $row->thumb_url;
 				}
 				?>
-				<a class="vvimeo huge_it_videogallery_item group<?php echo esc_attr($gallery_videoID); ?>"
-				   href="<?php echo esc_url("//player.vimeo.com/video/". $videourl[0]); ?>"
-                   data-description="<?php echo str_replace('__5_5_5__', '%', $row->description); ?>"
-                   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>" data-id="<?php echo esc_attr($row->id); ?>">
+				<a class="vvimeo huge_it_videogallery_item group1"
+				   href="//player.vimeo.com/video/<?php echo $videourl[0]; ?>"
+				   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>" data-id="<?php echo $row->id; ?>">
 					<img alt="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>"
 					     src="<?php echo esc_attr( $imgsrc ); ?>"/>
-					<div class="play-icon <?php echo esc_url($videourl[1]); ?>-icon"></div>
+					<div class="play-icon <?php echo $videourl[1]; ?>-icon"></div>
 				</a>
 				<input type="hidden" class="pagenum" value="1"/>
 				<?php
@@ -46,11 +44,11 @@
 	</div>
 	<?php
 	$a = $disp_type;
-	if ( $a == 1 && $num < $total_videos){
+	if ( $a == 1 ){
 		$gallery_video_justified_nonce = wp_create_nonce( 'gallery_video_justified_nonce' );
 		?>
 		<div class="load_more2">
-			<div class="load_more_button2 load_more_button_<?php echo esc_attr($gallery_videoID); ?>"
+			<div class="load_more_button2 load_more_button_<?php echo $gallery_videoID; ?>"
 			     data-justified-load-nonce="<?php echo $gallery_video_justified_nonce; ?>"><?php echo $gallery_video_get_option['gallery_video_video_ht_view8_loadmore_text']; ?></div>
 			<div class="loading2 loading_<?php echo $gallery_videoID; ?>"><img
 					src="<?php if ( $gallery_video_get_option['gallery_video_video_ht_view8_loading_type'] == '1' ) {
@@ -69,7 +67,7 @@
 	<div class="paginate2">
 		<?php
 		$protocol    = stripos( $_SERVER['SERVER_PROTOCOL'], 'https' ) === true ? 'https://' : 'http://';
-		$actual_link = esc_attr($protocol) . esc_url($_SERVER['HTTP_HOST']) . esc_url($_SERVER['REQUEST_URI']) . "";
+		$actual_link = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "";
 		$checkREQ    = '';
 		$pattern     = "/\?p=/";
 		$pattern2    = "/&page-video[0-9]+=[0-9]+/";

@@ -1,7 +1,6 @@
 <?php
 /**
  * @package All-in-One-SEO-Pack
- * @version 2.3.12.2
  */
 
 if ( ! class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
@@ -1764,7 +1763,6 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
 
 		/**
 		 * Load scripts for module, can pass data to module script.
-		 * @since 2.3.12.3 Add missing wp_enqueue_media.
 		 */
 		function enqueue_scripts() {
 			wp_enqueue_script( 'sack' );
@@ -1777,12 +1775,6 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
 			if ( ! empty( $this->pointers ) ) {
 				wp_enqueue_script( 'wp-pointer', false, array( 'jquery' ) );
 			}
-			global $post;
-			if( !empty( $post->ID) ) {
-				wp_enqueue_media( array( 'post' => $post->ID ) );
-			}else{
-				wp_enqueue_media();
-            }
 			wp_enqueue_script( 'aioseop-module-script', AIOSEOP_PLUGIN_URL . 'js/modules/aioseop_module.js', array(), AIOSEOP_VERSION );
 			if ( ! empty( $this->script_data ) ) {
 				aioseop_localize_script_data();
@@ -2565,7 +2557,7 @@ if ( ! class_exists( 'All_in_One_SEO_Pack_Module' ) ) {
 							'Submit_Default' => array(
 								'type'  => 'submit',
 								'class' => 'button-secondary',
-								'value' => sprintf( __( 'Reset %s Settings to Defaults', 'all-in-one-seo-pack' ), $name ) . ' &raquo;',
+								'value' => __( sprintf( 'Reset %s Settings to Defaults', $name ), 'all-in-one-seo-pack' ) . ' &raquo;',
 							),
 						);
 						$submit_options = apply_filters( "{$this->prefix}submit_options", $submit_options, $location );

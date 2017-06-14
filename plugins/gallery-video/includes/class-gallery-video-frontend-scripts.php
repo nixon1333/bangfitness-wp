@@ -25,20 +25,10 @@ class Gallery_Video_Frontend_Scripts {
 		wp_register_style( 'gallery-video-style2-os-css', plugins_url( '../assets/style/style2-os.css', __FILE__ ) );
 		wp_enqueue_style( 'gallery-video-style2-os-css' );
 
-        if ( get_option('gallery_video_lightbox_type') == 'old_type' ) {
-            wp_register_style( 'lightbox-css', plugins_url( '../assets/style/lightbox.css', __FILE__ ) );
-            wp_enqueue_style( 'lightbox-css' );
+		wp_register_style( 'lightbox-css', plugins_url( '../assets/style/lightbox.css', __FILE__ ) );
+		wp_enqueue_style( 'lightbox-css' );
 
-            wp_register_style( 'gallery_video_colorbox_css', untrailingslashit( gallery_video()->plugin_url() ) . '/assets/style/colorbox-' . $gallery_video_get_option['gallery_video_light_box_style'] . '.css' );
-            wp_enqueue_style( 'gallery_video_colorbox_css' );
-        } elseif (  get_option('gallery_video_lightbox_type') == 'new_type' ) {
-            wp_register_style( 'gallery_video_resp_lightbox_css', untrailingslashit( gallery_video()->plugin_url() ) . '/assets/style/responsive_lightbox.css' );
-            wp_enqueue_style( 'gallery_video_resp_lightbox_css' );
-
-                    }
-
-
-        wp_register_style( 'fontawesome-css', plugins_url( '../assets/style/css/font-awesome.css', __FILE__ ) );
+		wp_register_style( 'fontawesome-css', plugins_url( '../assets/style/css/font-awesome.css', __FILE__ ) );
 		wp_enqueue_style( 'fontawesome-css' );
 
 		wp_enqueue_style( 'gallery_video_colorbox_css', untrailingslashit( Gallery_Video()->plugin_url() ) . '/assets/style/colorbox-' . $gallery_video_get_option[ 'gallery_video_light_box_style' ] . '.css' );
@@ -64,24 +54,13 @@ class Gallery_Video_Frontend_Scripts {
 	 */
 	public function frontend_scripts( $id, $gallery_video_view, $has_youtube, $has_vimeo ) {
 		$view_slug = gallery_video_get_view_slag_by_id( $id );
-        $gallery_video_get_option = gallery_video_get_default_general_options();
+
 		if ( ! wp_script_is( 'jquery' ) ) {
 			wp_enqueue_script( 'jquery' );
 		}
 
-        if (  get_option('gallery_video_lightbox_type') == 'old_type' ) {
-            wp_register_script( 'jquery.vgcolorbox-js', plugins_url( '../assets/js/jquery.colorbox.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-            wp_enqueue_script( 'jquery.vgcolorbox-js' );
-        } elseif (  get_option('gallery_video_lightbox_type') == 'new_type' ) {
-            wp_register_script( 'gallery-video-resp-lightbox-js', plugins_url( '../assets/js/lightbox.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-            wp_enqueue_script( 'gallery-video-resp-lightbox-js' );
-
-            wp_register_script( 'mousewheel-min-js', plugins_url( '../assets/js/mousewheel.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-            wp_enqueue_script( 'mousewheel-min-js' );
-
-            wp_register_script( 'froogaloop2-min-js', plugins_url( '../assets/js/froogaloop2.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-            wp_enqueue_script( 'froogaloop2-min-js' );
-        }
+		wp_register_script( 'jquery.vgcolorbox-js', plugins_url( '../assets/js/jquery.colorbox.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+		wp_enqueue_script( 'jquery.vgcolorbox-js' );
 
 		wp_register_script( 'gallery-video-hugeitmicro-min-js', plugins_url( '../assets/js/jquery.hugeitmicro.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
 		wp_enqueue_script( 'gallery-video-hugeitmicro-min-js' );
@@ -110,7 +89,14 @@ class Gallery_Video_Frontend_Scripts {
 			wp_register_script( 'video-jusiifed-js', plugins_url( '../assets/js/justifiedGallery.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
 			wp_enqueue_script( 'video-jusiifed-js' );
 		}
-
+		/*if ( $gallery_video_view == '3' ) {
+			if ( $has_youtube ) {
+				wp_enqueue_script( 'youtube-lib-js', plugins_url( '../assets/js/youtube.lib.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+			}
+			if ( $has_vimeo ) {
+				wp_enqueue_script( 'vimeo-lib-js', plugins_url( '../assets/js/vimeo.lib.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+			}
+		}*/
 
 	}
 
@@ -263,69 +249,6 @@ class Gallery_Video_Frontend_Scripts {
 			$justified_params[ $name ] = $value;
 		}
 
-
-        $lightbox_options = array(
-            'gallery_video_lightbox_slideAnimationType'            => $gallery_video_get_option['gallery_video_lightbox_slideAnimationType'],
-            'gallery_video_lightbox_lightboxView'                  => get_option('gallery_video_lightbox_lightboxView'),
-            'gallery_video_lightbox_speed_new'                     => get_option('gallery_video_lightbox_speed_new'),
-            'gallery_video_lightbox_width_new'                     => $gallery_video_get_option['gallery_video_lightbox_width_new'],
-            'gallery_video_lightbox_height_new'                    => $gallery_video_get_option['gallery_video_lightbox_height_new'],
-            'gallery_video_lightbox_videoMaxWidth'                 => $gallery_video_get_option['gallery_video_lightbox_videoMaxWidth'],
-            'gallery_video_lightbox_overlayDuration'               => $gallery_video_get_option['gallery_video_lightbox_overlayDuration'],
-            'gallery_video_lightbox_overlayClose_new'              => get_option('gallery_video_lightbox_overlayClose_new'),
-            'gallery_video_lightbox_loop_new'                      => get_option('gallery_video_lightbox_loop_new'),
-            'gallery_video_lightbox_escKey_new'                    => $gallery_video_get_option['gallery_video_lightbox_escKey_new'],
-            'gallery_video_lightbox_keyPress_new'                  => $gallery_video_get_option['gallery_video_lightbox_keyPress_new'],
-            'gallery_video_lightbox_arrows'                        => $gallery_video_get_option['gallery_video_lightbox_arrows'],
-            'gallery_video_lightbox_mouseWheel'                    => $gallery_video_get_option['gallery_video_lightbox_mouseWheel'],
-            'gallery_video_lightbox_showCounter'                   => $gallery_video_get_option['gallery_video_lightbox_showCounter'],
-            'gallery_video_lightbox_nextHtml'                      => $gallery_video_get_option['gallery_video_lightbox_nextHtml'],
-            'gallery_video_lightbox_prevHtml'                      => $gallery_video_get_option['gallery_video_lightbox_prevHtml'],
-            'gallery_video_lightbox_sequence_info'                 => $gallery_video_get_option['gallery_video_lightbox_sequence_info'],
-            'gallery_video_lightbox_sequenceInfo'                  => $gallery_video_get_option['gallery_video_lightbox_sequenceInfo'],
-            'gallery_video_lightbox_slideshow_new'                 => $gallery_video_get_option['gallery_video_lightbox_slideshow_new'],
-            'gallery_video_lightbox_slideshow_auto_new'            => $gallery_video_get_option['gallery_video_lightbox_slideshow_auto_new'],
-            'gallery_video_lightbox_slideshow_speed_new'           => $gallery_video_get_option['gallery_video_lightbox_slideshow_speed_new'],
-            'gallery_video_lightbox_slideshow_start_new'           => $gallery_video_get_option['gallery_video_lightbox_slideshow_start_new'],
-            'gallery_video_lightbox_slideshow_stop_new'            => $gallery_video_get_option['gallery_video_lightbox_slideshow_stop_new'],
-            'gallery_video_lightbox_watermark'                     => $gallery_video_get_option['gallery_video_lightbox_watermark'],
-            'gallery_video_lightbox_socialSharing'                 => $gallery_video_get_option['gallery_video_lightbox_socialSharing'],
-            'gallery_video_lightbox_facebookButton'                => $gallery_video_get_option['gallery_video_lightbox_facebookButton'],
-            'gallery_video_lightbox_twitterButton'                 => $gallery_video_get_option['gallery_video_lightbox_twitterButton'],
-            'gallery_video_lightbox_googleplusButton'              => $gallery_video_get_option['gallery_video_lightbox_googleplusButton'],
-            'gallery_video_lightbox_pinterestButton'               => $gallery_video_get_option['gallery_video_lightbox_pinterestButton'],
-            'gallery_video_lightbox_linkedinButton'                => $gallery_video_get_option['gallery_video_lightbox_linkedinButton'],
-            'gallery_video_lightbox_tumblrButton'                  => $gallery_video_get_option['gallery_video_lightbox_tumblrButton'],
-            'gallery_video_lightbox_redditButton'                  => $gallery_video_get_option['gallery_video_lightbox_redditButton'],
-            'gallery_video_lightbox_bufferButton'                  => $gallery_video_get_option['gallery_video_lightbox_bufferButton'],
-            'gallery_video_lightbox_diggButton'                    => $gallery_video_get_option['gallery_video_lightbox_diggButton'],
-            'gallery_video_lightbox_vkButton'                      => $gallery_video_get_option['gallery_video_lightbox_vkButton'],
-            'gallery_video_lightbox_yummlyButton'                  => $gallery_video_get_option['gallery_video_lightbox_yummlyButton'],
-            'gallery_video_lightbox_watermark_text'                => $gallery_video_get_option['gallery_video_lightbox_watermark_text'],
-            'gallery_video_lightbox_watermark_textColor'           => $gallery_video_get_option['gallery_video_lightbox_watermark_textColor'],
-            'gallery_video_lightbox_watermark_textFontSize'        => $gallery_video_get_option['gallery_video_lightbox_watermark_textFontSize'],
-            'gallery_video_lightbox_watermark_containerBackground' => $gallery_video_get_option['gallery_video_lightbox_watermark_containerBackground'],
-            'gallery_video_lightbox_watermark_containerOpacity'    => $gallery_video_get_option['gallery_video_lightbox_watermark_containerOpacity'],
-            'gallery_video_lightbox_watermark_containerWidth'      => $gallery_video_get_option['gallery_video_lightbox_watermark_containerWidth'],
-            'gallery_video_lightbox_watermark_position_new'        => $gallery_video_get_option['gallery_video_lightbox_watermark_position_new'],
-            'gallery_video_lightbox_watermark_opacity'             => $gallery_video_get_option['gallery_video_lightbox_watermark_opacity'],
-            'gallery_video_lightbox_watermark_margin'              => $gallery_video_get_option['gallery_video_lightbox_watermark_margin'],
-            'gallery_video_lightbox_watermark_img_src_new'         => $gallery_video_get_option['gallery_video_lightbox_watermark_img_src_new'],
-        );
-
-        if ( get_option('gallery_video_lightbox_type')== 'old_type' ) {
-            wp_localize_script( 'jquery.vgcolorbox-js', 'lightbox_obj', $lightbox );
-        }
-        elseif ( get_option('gallery_video_lightbox_type') == 'new_type' ) {
-            list($r,$g,$b) = array_map('hexdec',str_split($gallery_video_get_option['gallery_video_lightbox_watermark_containerBackground'],2));
-            $titleopacity=$gallery_video_get_option["gallery_video_lightbox_watermark_containerOpacity"]/100;
-            $lightbox_options['gallery_video_lightbox_watermark_container_bg_color'] =  'rgba('.$r.','.$g.','.$b.','.$titleopacity.')';
-            wp_localize_script( 'gallery-video-resp-lightbox-js', 'gallery_video_resp_lightbox_obj', $lightbox_options );
-            wp_localize_script( 'gallery-video-custom-js', 'is_watermark', $gallery_video_get_option['gallery_video_lightbox_watermark'] );
-            wp_localize_script( 'gallery-video-resp-lightbox-js', 'videoGalleryDisableRightClickLightbox', get_option( 'gallery_video_disable_right_click' ) );
-        }
-        wp_localize_script( 'gallery-video-custom-js', 'video_lightbox_type', get_option('gallery_video_lightbox_type') );
-
 		wp_localize_script( 'gallery-video-front-end-js-' . $view_slug, 'param_obj', $gallery_video_params );
 		wp_localize_script( 'gallery-video-front-end-js-' . $view_slug, 'adminUrl', $admin_url );
 		wp_localize_script( 'gallery-video-front-end-js-' . $view_slug, 'hasYoutube', $has_youtube );
@@ -333,7 +256,7 @@ class Gallery_Video_Frontend_Scripts {
 		wp_localize_script( 'jquery.vgcolorbox-js', 'lightbox_obj', $lightbox );
 		wp_localize_script( 'gallery-video-custom-js', 'galleryVideoId', $id );
 		wp_localize_script( 'video-jusiifed-js', 'justified_obj', $justified );
-        wp_localize_script( 'gallery-video-custom-js', 'gallery_video_view', $view_slug );
-
-    }
+	}
 }
+
+new Gallery_Video_Frontend_Scripts();

@@ -1,9 +1,9 @@
 <div id="main-slider_<?php echo $gallery_videoID; ?>"
-     class="liquid-slider main-slider view-<?php echo esc_attr($view_slug); ?> gallery-video-content"
-     data-pause-hover="<?php echo esc_attr($gallery_video[0]->pause_on_hover); ?>"
-     data-autoslide="<?php echo esc_attr($gallery_video[0]->autoslide); ?>"
-     data-slide-duration="<?php echo esc_attr($gallery_video[0]->param); ?>"
-     data-slide-interval="<?php echo esc_attr($gallery_video[0]->description); ?>"
+     class="liquid-slider main-slider view-<?php echo $view_slug; ?> gallery-video-content"
+     data-pause-hover="<?php echo $gallery_video[0]->pause_on_hover; ?>"
+     data-autoslide="<?php echo $gallery_video[0]->autoslide; ?>"
+     data-slide-duration="<?php echo $gallery_video[0]->param; ?>"
+     data-slide-interval="<?php echo $gallery_video[0]->description; ?>"
      data-gallery-video-id="<?php echo $gallery_videoID; ?>">
 	<?php
 	foreach ( $videos as $key => $row ) {
@@ -19,32 +19,30 @@
 					$videourl = gallery_video_get_video_id_from_url( $row->image_url );
 					if ( $videourl[1] == 'youtube' ) {
 						if ( empty( $row->thumb_url ) ) {
-							$thumb_pic = '//img.youtube.com/vi/' . esc_attr($videourl[0]) . '/mqdefault.jpg';
+							$thumb_pic = 'http://img.youtube.com/vi/' . $videourl[0] . '/mqdefault.jpg';
 						} else {
 							$thumb_pic = $row->thumb_url;
 						}
 						?>
-						<a data-id="<?php echo $row->id; ?>" class="vyoutube huge_it_videogallery_item group<?php echo $gallery_videoID; ?>"
-						   href="//www.youtube.com/embed/<?php echo $videourl[0]; ?>"
-                           data-description="<?php echo str_replace('__5_5_5__', '%', $row->description); ?>"
-                           title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>">
-							<img src="<?php echo esc_attr( $thumb_pic ); ?>" alt="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>"/>
-							<div class="play-icon <?php echo esc_attr($videourl[1]); ?>-icon"></div>
+						<a data-id="<?php echo $row->id; ?>" class="vyoutube huge_it_videogallery_item group1"
+						   href="https://www.youtube.com/embed/<?php echo $videourl[0]; ?>"
+						   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>">
+							<img src="<?php echo esc_attr( $thumb_pic ); ?>" alt=""/>
+							<div class="play-icon <?php echo $videourl[1]; ?>-icon"></div>
 						</a>
 						<?php
 					} else {
-						$hash = @unserialize( wp_remote_fopen( $protocol . "vimeo.com/api/v2/video/" . esc_attr($videourl[0]) . ".php" ) );
+						$hash = unserialize( wp_remote_fopen( $protocol . "vimeo.com/api/v2/video/" . $videourl[0] . ".php" ) );
 						if ( empty( $row->thumb_url ) ) {
 							$imgsrc = $hash[0]['thumbnail_large'];
 						} else {
 							$imgsrc = $row->thumb_url;
 						}
 						?>
-						<a class="vvimeo huge_it_videogallery_item group<?php echo $gallery_videoID; ?>" data-id="<?php echo $row->id; ?>"
-						   href="//player.vimeo.com/video/<?php echo esc_attr($videourl[0]); ?>"
-                           data-description="<?php echo str_replace('__5_5_5__', '%', $row->description); ?>"
-                            title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>">
-							<img src="<?php echo esc_attr( $imgsrc ); ?>" alt="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>" />
+						<a class="vvimeo huge_it_videogallery_item group1" data-id="<?php echo $row->id; ?>"
+						   href="//player.vimeo.com/video/<?php echo $videourl[0]; ?>"
+						   title="<?php echo str_replace( '__5_5_5__', '%', $row->name ); ?>">
+							<img src="<?php echo esc_attr( $imgsrc ); ?>" alt=""/>
 							<div class="play-icon <?php echo $videourl[1]; ?>-icon"></div>
 						</a>
 						<?php
@@ -58,7 +56,7 @@
 							class="description"><?php echo str_replace( '__5_5_5__', '%', $row->description ); ?></div><?php } ?>
 					<?php if ( $gallery_video_get_option["gallery_video_ht_view5_show_linkbutton"] == 'on' ) { ?>
 						<div class="button-block">
-							<a href="<?php echo esc_attr($link); ?>"
+							<a href="<?php echo $link; ?>"
 							   data-id="b<?php echo $row->id; ?>" <?php if ( $row->link_target == "on" ) {
 								echo 'target="_blank"';
 							} ?>><?php echo $gallery_video_get_option["gallery_video_ht_view5_linkbutton_text"]; ?></a>

@@ -18,6 +18,9 @@ class Gallery_Video_Galleries {
 		$id   = gallery_video_get_video_gallery_id();
 		switch ( $task ) {
 			case 'edit_cat':
+				if ( ! isset( $_REQUEST['huge_it_gallery_video_nonce'] ) || ! wp_verify_nonce( $_REQUEST['huge_it_gallery_video_nonce'], 'huge_it_gallery_video_nonce' . $id  ) ) {
+					wp_die( 'Security check fail' );
+				}
 				if ( $id ) {
 					$this->edit_video_gallery( $id );
 				} else {
@@ -106,23 +109,22 @@ class Gallery_Video_Galleries {
 				$cat_id = 0;
 			}
 		}
-        $query='';
+
 		if ( $search_tag ) {
 			$where = " WHERE name LIKE '%" . $search_tag . "%' ";
 		}
 		if ( $where ) {
 			if ( $cat_id ) {
 				$where .= " AND sl_width=" . $cat_id;
-                $query  = $wpdb->prepare("SELECT COUNT(*) FROM " . $wpdb->prefix . "huge_it_videogallery_galleries  WHERE name LIKE %s  AND sl_width=%d" ,'%'.$search_tag.'%',$cat_id);
-           }
+			}
 		} else {
 			if ( $cat_id ) {
 				$where .= " WHERE sl_width=" . $cat_id;
-                $query  = $wpdb->prepare("SELECT COUNT(*) FROM " . $wpdb->prefix . "huge_it_videogallery_galleries  WHERE sl_width=%d" ,$cat_id);
-            }
+			}
 		}
-		$cat_row_query    = $wpdb->prepare("SELECT id,name FROM " . $wpdb->prefix . "huge_it_videogallery_galleries WHERE sl_width= %d",0);
+		$cat_row_query    = "SELECT id,name FROM " . $wpdb->prefix . "huge_it_videogallery_galleries WHERE sl_width=0";
 		$cat_row          = $wpdb->get_results( $cat_row_query );
+		$query            = "SELECT COUNT(*) FROM " . $wpdb->prefix . "huge_it_videogallery_galleries" . $where;
 		$total            = $wpdb->get_var( $query );
 		$pageNav['total'] = $total;
 		$pageNav['limit'] = $limit / 20 + 1;
@@ -288,7 +290,6 @@ GROUP BY " . $wpdb->prefix . "huge_it_videogallery_videos.videogallery_id ";
 		$row   = $wpdb->get_row( $query );
 		$query = $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "huge_it_videogallery_videos where videogallery_id = %d order by id ASC", $row->id );
 		$rowim = $wpdb->get_results( $query );
-        $allowed_tags = wp_kses_allowed_html('post');
 
 		foreach ( $rowim as $key => $rowimages ) {
 			if ( isset( $_POST[ "order_by_" . $rowimages->id . "" ] ) ) {
@@ -299,8 +300,8 @@ GROUP BY " . $wpdb->prefix . "huge_it_videogallery_videos.videogallery_id ";
 					'off'
 				) ) ? $_POST[ "sl_link_target" . $rowimages->id ] : 'on';
 				$sl_url        = sanitize_text_field( str_replace( '%', '__5_5_5__', $_POST[ "sl_url" . $rowimages->id ] ) );
-				$title         = wp_kses( wp_unslash( str_replace( '%', '__5_5_5__', $_POST[ "titleimage" . $rowimages->id ] ) ), $allowed_tags );
-				$description   = wp_kses( wp_unslash( str_replace( '%', '__5_5_5__', $_POST[ "im_description" . $rowimages->id ] ) ),$allowed_tags );
+				$title         = wp_kses( wp_unslash( str_replace( '%', '__5_5_5__', $_POST[ "titleimage" . $rowimages->id ] ) ), 'default' );
+				$description   = wp_kses( wp_unslash( str_replace( '%', '__5_5_5__', $_POST[ "im_description" . $rowimages->id ] ) ), 'default' );
 				$video_url     = sanitize_text_field( $_POST[ "imagess" . $rowimages->id ] );
 				$thumb_url     = sanitize_text_field( $_POST[ "thumbs" . $rowimages->id ] );
 				if( !isset($_POST["show_controls". $rowimages->id ] ))
@@ -333,7 +334,6 @@ GROUP BY " . $wpdb->prefix . "huge_it_videogallery_videos.videogallery_id ";
 					array( 'ID' => $rowimages->id )
 				);
 			}
-
 		}
 		?>
 		<div class="updated"><p><strong><?php _e( 'Item Saved' ); ?></strong></p></div>

@@ -36,9 +36,32 @@ class Moove_Importer_Actions {
 	function moove_register_scripts() {
 		if ( is_admin() ) :
 			add_action( 'admin_enqueue_scripts', array( &$this, 'moove_importer_admin_scripts' ) );
+		else :
+			add_action( 'wp_enqueue_scripts', array( &$this, 'moove_frontend_importer_scripts' ) );
 		endif;
 	}
-
+	/**
+	 * Register global variables to head, AJAX, Form validation messages
+	 *
+	 * @param  string $ascript The registered script handle you are attaching the data for.
+	 * @return void
+	 */
+	public function moove_localize_script( $ascript ) {
+		$this->importer_loc_data = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		);
+		wp_localize_script( $ascript, 'moove_frontend_importer_scripts', $this->importer_loc_data );
+	}
+	/**
+	 * Registe FRONT-END Javascripts and Styles
+	 *
+	 * @return void
+	 */
+	public function moove_frontend_importer_scripts() {
+		wp_enqueue_script( 'moove_importer_frontend', plugins_url( basename( dirname( __FILE__ ) ) ) . '/assets/js/moove_importer_frontend.js', array( 'jquery' ), '1.0', true );
+		wp_enqueue_style( 'moove_importer_frontend', plugins_url( basename( dirname( __FILE__ ) ) ) . '/assets/css/moove_importer_frontend.css' );
+		$this->moove_localize_script( 'moove_importer_frontend' );
+	}
 	/**
 	 * Registe BACK-END Javascripts and Styles
 	 *

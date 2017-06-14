@@ -51,7 +51,6 @@ function Gallery_Video_Lightbox_Gallery(id) {
                 }
             }
         };
-        galleryVideoIsotope(_this.container.children().first());
 		var loadInterval = setInterval(function(){
 			galleryVideoIsotope(_this.container.children().first(),options);
 			},100);
@@ -88,7 +87,7 @@ function Gallery_Video_Lightbox_Gallery(id) {
 
         _this.showCenter();
         var loadInterval = setInterval(function(){
-            galleryVideoIsotope(_this.container.children().first(),'layout');
+            galleryVideoIsotope(_this.container.children().first(),'reLayout');
         },100);
         setTimeout(function(){clearInterval(loadInterval);},5000);
     };
@@ -155,16 +154,15 @@ function Gallery_Video_Lightbox_Gallery(id) {
 									}
 								}
 							};
-                            galleryVideoIsotope(_this.container.children().first());
 							galleryVideoIsotope(_this.container.children().first(),options2);
 							galleryVideoIsotope(_this.container.children().first(),'reloadItems');
 							galleryVideoIsotope(_this.container.children().first(),{sortBy: 'original-order'});
-							galleryVideoIsotope(_this.container.children().first(),'layout');
+							galleryVideoIsotope(_this.container.children().first(),'reLayout');
 						},50);
                         if (_this.isCentered) {
                             _this.showCenter();
                             var loadInterval = setInterval(function(){
-                                galleryVideoIsotope(_this.container.children().first(),'layout');
+                                galleryVideoIsotope(_this.container.children().first(),'reLayout');
                             },100);
                             setTimeout(function(){clearInterval(loadInterval);},5000);
                         }

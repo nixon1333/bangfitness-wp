@@ -48,3 +48,5 @@ class Gallery_Video_Admin_Assets {
 		}
 	}
 }
+
+new Gallery_Video_Admin_Assets();

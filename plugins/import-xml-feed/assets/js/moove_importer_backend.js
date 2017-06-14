@@ -1,16 +1,10 @@
+
 (function($) {
     var file,
         selected_node,
         xml_content_json,
         item_counter = 0,
         ajax_action = "";
-    $.fn.get_xml_content_json = function(){
-      return xml_content_json;
-    };
-
-    $.fn.get_xml_file_content = function(){
-      return file;
-    };
 
     function MooveReadXML(data, type, xmlaction, node) {
         ajax_action = 'read';
@@ -39,6 +33,7 @@
                     xml_content_json = JSON.parse(msg.xml_json_data);
                     $('.moove-feed-xml-preview-container').empty().append(msg.content);
                     $('.moove-importer-dynamic-select').empty().append(msg.select_option);
+
                     $('.moove-feed-xml-error').addClass('moove-hidden');
                     $('.moove-feed-xml-cnt').slideToggle('fast');
                     $('.moove-feed-xml-preview').slideToggle('fast');
@@ -48,7 +43,7 @@
         )
     }
 
-    function MooveCreatePost( key, value, post_data_select, import_length ) {
+    function MooveCreatePost( key, value, post_data_select ) {
         ajax_action = 'import';
         $.post(
             ajaxurl,
@@ -60,7 +55,8 @@
             },
             function(msg) {
                 item_counter = item_counter + 1;
-                var percentage =  Math.ceil(item_counter*(100/import_length));
+                var total_count = Object.keys(xml_content_json).length,
+                    percentage =  Math.ceil(item_counter*(100/total_count));
                 $('.moove-importer-ajax-import-progress-bar span').css('width',percentage+'%');
                 $('.moove-importer-percentage').text(percentage+'%');
                 if ( percentage == 100 ) {
@@ -117,9 +113,6 @@
             if ( selected !== '0' ) {
                 $('.moove-feed-importer-taxonomies').removeClass('moove-hidden');
                 $('.moove_cpt_tax').addClass('moove-hidden');
-                $('.moove_cpt_tax_'+selected+'_settings').removeClass('moove-hidden');
-                $('.moove_cpt_tax_'+selected+'_acf').removeClass('moove-hidden');
-                $('.moove_cpt_tax_'+selected+'_customfields').removeClass('moove-hidden');
                 $('.moove_cpt_tax_'+selected).removeClass('moove-hidden');
                 $('.moove-submit-btn-cnt').removeClass('moove-hidden');
             } else {
@@ -133,30 +126,12 @@
 
             var post_selected = $('#moove-importer-post-type-select option:selected').val();
             var taxonomies = [];
-            var acf = [];
-            var customfields = [];
-            var cfcounter = 0;
             if ( $('#moove-importer-post-type-posttitle option:selected').val() !== "0") {
                 $('.moove-feed-xml-cnt .moove-title-error').empty();
                 $('.moove_cpt_tax_'+post_selected+' .moove-importer-taxonomy-box').each(function( index, value ){
                     taxonomies[index] = ({
                         taxonomy    :   $(this).attr('data-taxonomy'),
                         title       :   $(this).find('select.moove-importer-taxonomy-title option:selected').val()
-                    });
-                });
-
-                $('.moove_cpt_tax_'+post_selected+'_acf.moove-importer-accordion .moove-importer-taxonomy-box').each(function( index, value ){
-                    cfcounter++;
-                    acf[cfcounter] = ({
-                        field       :   $(this).find('.moove-importer-acf-type-select').val(),
-                        value       :   $(this).find('.moove-importer-acf-xml-select').val()
-                    });
-                });
-
-                $('.moove_cpt_tax_'+post_selected+'_customfields.moove-importer-accordion .moove-customfield-existing').each(function( index, value ){
-                    customfields[index] = ({
-                        field       :   $(this).find('.moove-customfield-dynamic-field').val(),
-                        value       :   $(this).find('.moove-importer-customfield-xml-select').val()
                     });
                 });
 
@@ -169,46 +144,14 @@
                     post_excerpt        :   $('#moove-importer-post-type-postexcerpt option:selected').val(),
                     post_featured_image :   $('#moove-importer-post-type-ftrimage option:selected').val(),
                     post_author         :   $('#moove-importer-post-type-author option:selected').val(),
-                    taxonomies          :   moove_array_to_object(taxonomies),
-                    acf                 :   moove_array_to_object(acf),
-                    customfields        :   moove_array_to_object(customfields)
+                    taxonomies          :   moove_array_to_object(taxonomies)
                 });
                 $('.moove-feed-importer-where').hide();
                 $('.moove-feed-importer-from').hide();
                 $('.moove-importer-ajax-import-overlay').slideToggle('fast');
-                var import_limit = $('.moove_cpt_tax_'+post_selected+'_settings input[name="moove_feed_importer_limit"]').val();
-                if ( import_limit ) {
-                    var enabled_ids = [];
-                    var limit_export = import_limit.split(";");
-                    if ( limit_export && Array.isArray(limit_export) ) {
-                        for (var i = 0; i < limit_export.length; i++) {
-                            var limit_sections = limit_export[i].split("-");
-                            if ( limit_sections.length === 1 ) {
-                                enabled_ids.push(parseInt(limit_sections[0]));
-                            } else if (limit_sections.length === 2 ) {
-                                var start = limit_sections[0];
-                                var end = parseInt(limit_sections[1]);
-                                if ( limit_sections[1] === '' ) {
-                                    end = Object.keys(xml_content_json).length;
-                                }
-                                for (var j = start; j <= end; j++) {
-                                    enabled_ids.push( parseInt( j ) );
-                                }
-                            }
-                        }
-                    }
-                }
-                var import_counter = 0;
-                $.each(xml_content_json, function(key, value) {
-                    import_counter++;
-                    if ( Array.isArray( enabled_ids ) ) {
-                        if ( $.inArray( import_counter, enabled_ids ) > -1 ) {
-                            MooveCreatePost( key, value, post_data_select, enabled_ids.length );
-                        }
-                    } else {
-                        MooveCreatePost( key, value, post_data_select, Object.keys(xml_content_json).length );
-                    }
 
+                $.each(xml_content_json, function(key, value) {
+                    MooveCreatePost( key, value, post_data_select);
                 });
 
             } else {
@@ -288,71 +231,6 @@
                 $('.moove-form-container.feed_importer .pagination-info').text( 'Current item: '+$(this).parent().attr('data-current')+' / '+$('.moove-importer-readed-feed.moove-active').attr('data-total'));
             }
         });
-
-        $('.moove-importer-accordion .moove-importer-accordion-header').on('click','a',function(e){
-
-            if( $(e.target).is('.active') ) {
-                moove_close_accordion($(this));
-            } else {
-                moove_close_accordion($(this));
-                // Add active class to section title
-                $(this).addClass('active');
-                // Open up the hidden content panel
-                $(this).closest('.moove-importer-accordion').find('.moove-importer-accordion-content').slideDown(300).addClass('open');
-            }
-
-            e.preventDefault();
-        });
-
-        function moove_close_accordion(button) {
-            button.removeClass('active');
-            button.closest('.moove-importer-accordion').find('.moove-importer-accordion-content').slideUp(300);
-        }
-
-        $(document).on('click','.moove_importer_add_acf_rule',function(e){
-            e.preventDefault();
-            if ( ! $(this).is('.disabled') ) {
-                $(this).closest('.moove-importer-dynamic-accordion').find('.moove-initial-box').clone().appendTo($(this).closest('.moove-importer-accordion-content').find('.moove-importer-acf-rule-holder')).removeClass('moove-hidden').removeClass('moove-initial-box');
-                $(this).addClass('disabled');
-            }
-        });
-
-        $(document).on('change','.moove-importer-acf-box select',function(){
-            if ( $(this).parent().find('.moove-importer-acf-xml-select').val() != 0 && $(this).parent().find('.moove-importer-acf-type-select').val() != 0 ) {
-                $('.moove_importer_add_acf_rule').removeClass('disabled');
-            } else {
-                $('.moove_importer_add_acf_rule').addClass('disabled');
-            }
-        });
-
-        $(document).on('click','.moove_importer_add_customfield_existing',function(e){
-            e.preventDefault();
-            if ( ! $(this).is('.disabled') ) {
-                $(this).closest('.moove-importer-dynamic-accordion').find('.moove-initial-box-existing').clone().appendTo($(this).closest('.moove-importer-accordion-content').find('.moove-importer-customfield-rule-holder')).removeClass('moove-hidden').removeClass('moove-initial-box-existing');
-            }
-        });
-
-        $(document).on('click','.moove_importer_add_customfield_new',function(e){
-            e.preventDefault();
-            if ( ! $(this).is('.disabled') ) {
-                $(this).closest('.moove-importer-dynamic-accordion').find('.moove-initial-box-new').clone().appendTo($(this).closest('.moove-importer-accordion-content').find('.moove-importer-customfield-rule-holder')).removeClass('moove-hidden').removeClass('moove-initial-box-new');
-            }
-        });
-
-
-
-        $(document).on('click','.moove_importer_remove_acf_group',function(e) {
-            e.preventDefault();
-            $(this).closest('.moove-importer-acf-box').remove();
-            $('.moove_importer_add_acf_rule').removeClass('disabled');
-        });
-        $(document).on('click','.moove_importer_remove_customfield_group',function(e) {
-            e.preventDefault();
-            $(this).closest('.moove-importer-customfield-box').remove();
-            $('.moove_importer_add_customfield_new').removeClass('disabled')
-            $('.moove_importer_add_customfield_existing').removeClass('disabled')
-        });
-
     }); // end document ready
     $(document).ajaxSend(function () {
         if ( ajax_action === 'read' ) {

@@ -48,7 +48,8 @@ class Moove_Importer_Controller {
             if( Moove_Importer_Controller::moove_recurse_xml( $value , $parent . "/" . $key ) == 0 ) {
                 $this->xmlreturn[] = array(
                     'key'   =>  $parent . "/" . (string)$key,
-                    'value' =>  (string)$value
+                    'value' =>  (string)$value,
+                    'xml'   =>  $xml
                 );
             }
         endforeach;
@@ -98,6 +99,7 @@ class Moove_Importer_Controller {
                         'response'          =>  'true'
                     )
                 );
+                return ob_get_clean();
             else :
                 return json_encode( array( 'response' => 'false' ) );
             endif;
@@ -292,14 +294,13 @@ class Moove_Importer_Controller {
         }
         return $attachment_id;
     }
-
     /**
      * Upload image, and set as featured image
      * @param  int $post_id   Assign as featured image for this post.
      * @param  string $image_url Image URL from the feed
      * @return void
      */
-    private function moove_set_featured_image( $post_id, $image_url, $set_as_thumbnail ) {
+    private function moove_set_featured_image( $post_id, $image_url ) {
         // Add Featured Image to Post.
         $upload_dir = wp_upload_dir(); // Set upload folder.
         $image_data = file_get_contents($image_url); // Get image data.
@@ -336,83 +337,9 @@ class Moove_Importer_Controller {
                 $attach_id = Moove_Importer_Controller::moove_get_attachment_id_from_src( $file );
             endif;
             // And finally assign featured image to post.
-            if ( $set_as_thumbnail ) :
-                set_post_thumbnail( $post_id, $attach_id );
-            endif;
+            set_post_thumbnail( $post_id, $attach_id );
         }
-        return $attach_id;
     }
-
-    /**
-     * Place ACF custom fields to post
-     * @param  array $args Custom data
-     * @return boolean True if the post was created successfully, and False if not.
-     */
-    public function moove_instert_acf_fields( $args, $post_id ) {
-        if ( $args && ! empty( $args ) ) :
-            $supported_types = array(
-                'text',
-                'number',
-                'textarea',
-                'email',
-                'password',
-                'wysiwyg',
-                'image',
-                'date_picker',
-                'color_picker'
-            );
-            foreach ( $args['acf'] as $form_key => $acf_value ) :
-                if ( in_array( $acf_value['type'], $supported_types ) ) :
-                    $key    = $acf_value['key'];
-                    $value  = $acf_value['value'];
-                    if ( function_exists( 'update_field' ) ) :
-                        switch ($acf_value['type']) {
-                            case 'number':
-                                $value = intval( $value );
-                                break;
-                            case 'email':
-                                $value = sanitize_email( $value );
-                                break;
-                            case 'image':
-                                $attachment_id = Moove_Importer_Controller::moove_set_featured_image( $post_id, $value, false );
-                                $value = intval( $attachment_id );
-                                break;
-                            case 'date_picker' :
-                                try {
-                                    $value = DateTime::createFromFormat( "D, d M Y H:i:s O", $value )->format('Ymd');
-                                } catch (Exception $e) {
-                                    $value = '';
-                                }
-                            default:
-                                $value = sanitize_text_field( $value );
-                        }
-                        if ( $value ) :
-                            update_field( $key, $value, $post_id );
-                        endif;
-                    endif;
-                endif;
-            endforeach;
-            return true;
-        endif;
-        return false;
-    }
-
-    /**
-     * Place custom fields to post
-     * @param  array $args Custom data
-     * @return boolean True if the post was created successfully, and False if not.
-     */
-    public function moove_instert_custom_fields( $args, $post_id ) {
-        if ( $args && ! empty( $args ) ) :
-            foreach ( $args['customfields'] as $form_key => $customfield_value ) :
-                add_post_meta( $post_id, sanitize_text_field($customfield_value['field']), $customfield_value['value'] );
-            endforeach;
-            return true;
-        endif;
-        return false;
-    }
-
-
     /**
      * Create post from $args data
      * @param  array $args Custom data
@@ -423,8 +350,6 @@ class Moove_Importer_Controller {
         $key = json_decode( wp_unslash( $args['key'] ) );
         $xml_data_values = $args['value'];
         $new_form_data = array();
-        $acf_form_data = array();
-        $customfields_data = array();
         foreach ( $form_data as $form_key => $form_value ) :
 
             if ( $form_value !== '0' && $form_key !== 'post_status' && $form_key !== 'post_type' && $form_key !== 'post_author' && $form_key !== 'post_featured_image' ) :
@@ -445,54 +370,11 @@ class Moove_Importer_Controller {
 
                         endif;
                     endforeach;
-                elseif ( $form_key === 'acf' && is_array( $form_value ) ) :
-                    $j = 0;
-                    foreach ( $form_value as $acf_key => $acf_value ) :
-                        if ( $acf_value['value'] !== '0' && $acf_value['field'] !== '0' ) :
-                            $j++;
-                            $_key =  Moove_Importer_Controller::moove_recursive_array_search( $acf_value['value'] , $xml_data_values['values']) ;
-                            $_field = json_decode( wp_unslash( $acf_value['field'] ), true );
-                            if ( is_array( $_key ) ) :
-                                $acf_title = $xml_data_values['values'][$_key[0]]['value'];
-                                $acf_form_data[ $form_key ][] = array(
-                                    'field'         =>  $_field['name'],
-                                    'key'           =>  $_field['id'],
-                                    'type'          =>  $_field['type'],
-                                    'value'         =>  $acf_title,
-                                );
-                            endif;
-
-                        endif;
-                    endforeach;
-                elseif ( $form_key === 'customfields' ) :
-                    $j = 0;
-                    foreach ( $form_value as $cf_key => $customfields ) :
-                        if ( $customfields['value'] !== '0' && $customfields['field'] !== '0' ) :
-                            $j++;
-                            $_key =  Moove_Importer_Controller::moove_recursive_array_search( $customfields['value'] , $xml_data_values['values']) ;
-                            $_field = json_decode( wp_unslash( $customfields['field'] ), true );
-                            if ( is_array( $_key ) ) :
-                                $customfields_title = $xml_data_values['values'][$_key[0]]['value'];
-                                $customfields_data[ $form_key ][] = array(
-                                    'field'         =>  wp_unslash( $customfields['field'] ),
-                                    'value'         =>  $customfields_title,
-                                );
-                            endif;
-
-                        endif;
-                    endforeach;
                 elseif ( $form_key === 'post_date' ) :
 
                     $_key =  Moove_Importer_Controller::moove_recursive_array_search( $form_value , $xml_data_values['values'] );
                     if ( is_array( $_key ) ) :
-
-                        try {
-                            $new_date = date( 'Y-m-d H:i:s', strtotime( $xml_data_values['values'][$_key[0]]['value'] ) );
-                            $new_form_data[ $form_key ] = $new_date;
-                        } catch (Exception $e) {
-                            $new_form_data[ $form_key ] = date( 'Y-m-d H:i:s', strtotime() );
-                        }
-
+                        $new_form_data[ $form_key ] = DateTime::createFromFormat( "D, d M Y H:i:s O", $xml_data_values['values'][$_key[0]]['value'] )->format('Y-m-d H:i:s');
                     endif;
                 elseif ( $form_key === 'post_content' || $form_key === 'post_excerpt' ) :
                     $_key =  Moove_Importer_Controller::moove_recursive_array_search( $form_value , $xml_data_values['values'] );
@@ -544,10 +426,7 @@ class Moove_Importer_Controller {
                 wp_set_object_terms( $post_id, $title, $taxonomy, false );
             endif;
         endforeach;
-        Moove_Importer_Controller::moove_set_featured_image( $post_id, $new_form_data[ 'post_featured_image' ], true );
-        Moove_Importer_Controller::moove_instert_acf_fields( $acf_form_data, $post_id );
-        Moove_Importer_Controller::moove_instert_custom_fields( $customfields_data, $post_id );
-
+        Moove_Importer_Controller::moove_set_featured_image( $post_id, $new_form_data[ 'post_featured_image' ] );
         return ( $post_id ) ? true : false;
     }
 }

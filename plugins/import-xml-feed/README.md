@@ -19,16 +19,6 @@ Accepted formats: XML 1.0, XML 2.0, Atom 1, RSS
 
 After sucessfully uploading an XML file or reading an external URL, the plugin will present you with an XML preview of the selected node, which can be used to check if you've selected the correct node or you have all the data read correctly by the plugin. This preview presents one item from the selected node and it is paginated so you can navigate back and forward between the elements.
 
-### Custom field and ACF support
-
-You are able to use default custom fields. Also the ACF fields are supported by this plugin. You can use the following type of ACF fields: text, number, textarea, email, password, wysiwyg, image, date_picker, color_picker
-
-### Limit posts
-
-In the "Import Settings" area you can limit the import. You can use multiple patterns to include posts in the import. Use semicolon to separate the values. 
-Eg.: 1-8;10;14-
-
-
 ### Linking Taxonomies to Posts
 
 This plugin allows you to import categories/taxonomies from the XML file and link the imported posts to these taxonomies. 

@@ -1,11 +1,11 @@
 <div class="galery_video_view9_cont_list"
-     id="galery_video_view9_cont_list<?php echo esc_attr($gallery_videoID); ?>"
-     data-gallery-video-perpage="<?php echo esc_attr($num); ?>" data-gallery-video-id="<?php echo esc_attr($gallery_videoID); ?>">
-	<div id="gallery_video_view9_cont_list<?php echo esc_attr($gallery_videoID); ?>" class="gallery_video_view9_cont_list view-<?php echo esc_attr($view_slug); ?>">
-		<input type="hidden" id="total" value="<?php echo esc_attr($total); ?>"/>
+     id="galery_video_view9_cont_list<?php echo $gallery_videoID; ?>"
+     data-gallery-video-perpage="<?php echo $num; ?>" data-gallery-video-id="<?php echo $gallery_videoID; ?>">
+	<div id="gallery_video_view9_cont_list<?php echo $gallery_videoID; ?>" class="gallery_video_view9_cont_list view-<?php echo $view_slug; ?>">
+		<input type="hidden" id="total" value="<?php echo $total; ?>"/>
 		<?php
 		foreach ( $page_videos as $key => $row ) {
-			$videourl    = esc_url($row->image_url);
+			$videourl    = $row->image_url;
 			$pattern     = '/watch\?v=/';
 			$videourl    = preg_replace( $pattern, 'embed/', $videourl );
 			$icon        = gallery_video_youtube_or_vimeo( $videourl );
@@ -23,7 +23,7 @@
 				?>
 				<div class="video_view9_container">
 					<input type="hidden" class="pagenum" value="1"/>
-					<div class="video_view9_vid_wrapper" data-id="<?php echo esc_attr($row->id); ?>">
+					<div class="video_view9_vid_wrapper" data-id="<?php echo $row->id; ?>">
 						<?php if ( $video_thumb != '' ): ?>
 							<div class="thumb_wrapper" >
 								<img class="thumb_image" style="cursor: pointer;"
@@ -38,23 +38,23 @@
 								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//www.youtube.com/embed/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//www.youtube.com/embed/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							} else {
 								?>
-								<iframe class="video_view9_img <?php echo esc_attr($iframe_thumbclass); ?>"
+								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//player.vimeo.com/video/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//player.vimeo.com/video/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							}
 							?>
 						</div>
 					</div>
-					<h1 class="video_new_view_title"><?php echo esc_attr($video_name); ?></h1>
-					<div class="video_new_view_desc"><?php echo esc_attr($video_desc); ?></div>
+					<h1 class="video_new_view_title"><?php echo $video_name; ?></h1>
+					<div class="video_new_view_desc"><?php echo $video_desc; ?></div>
 				</div>
 				<div class="clear"></div>
 				<?php
@@ -62,39 +62,39 @@
 				?>
 				<div class="video_view9_container">
 					<input type="hidden" class="pagenum" value="1"/>
-					<h1 class="video_new_view_title"><?php echo esc_attr($video_name); ?></h1>
-					<div class="video_view9_vid_wrapper" data-id="<?php echo esc_attr($row->id); ?>">
+					<h1 class="video_new_view_title"><?php echo $video_name; ?></h1>
+					<div class="video_view9_vid_wrapper" data-id="<?php echo $row->id; ?>">
 
 							<div class="thumb_wrapper">
 							<?php if ( $video_thumb != '' ): ?>
 								<img class="thumb_image" style="cursor: pointer;"
 								     src="<?php echo esc_attr( $video_thumb ); ?>" alt=""/>
 							<?php endif; ?>
-								<div class="playbutton <?php echo esc_attr($icon); ?>-icon"></div>
+								<div class="playbutton <?php echo $icon; ?>-icon"></div>
 							</div>
 						<div id="thevideo" style="display: block;">
 							<?php
 							$videourl = gallery_video_get_video_id_from_url( $row->image_url );
 							if ( $videourl[1] == 'youtube' ) { ?>
-								<iframe class="video_view9_img <?php echo esc_attr($iframe_thumbclass); ?>"
+								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//www.youtube.com/embed/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//www.youtube.com/embed/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							} else {
 								?>
-								<iframe class="video_view9_img <?php echo esc_attr($iframe_thumbclass); ?>"
+								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//player.vimeo.com/video/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//player.vimeo.com/video/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							}
 							?>
 						</div>
 					</div>
-					<div class="video_new_view_desc"><?php echo esc_attr($video_desc); ?></div>
+					<div class="video_new_view_desc"><?php echo $video_desc; ?></div>
 				</div>
 				<div class="clear"></div>
 				<?php
@@ -102,32 +102,32 @@
 				?>
 				<div class="video_view9_container">
 					<input type="hidden" class="pagenum" value="1"/>
-					<h1 class="video_new_view_title"><?php echo esc_attr($video_name); ?></h1>
-					<div class="video_new_view_desc"><?php echo esc_attr($video_desc); ?></div>
-					<div class="video_view9_vid_wrapper" data-id="<?php echo esc_attr($row->id); ?>">
+					<h1 class="video_new_view_title"><?php echo $video_name; ?></h1>
+					<div class="video_new_view_desc"><?php echo $video_desc; ?></div>
+					<div class="video_view9_vid_wrapper" data-id="<?php echo $row->id; ?>">
 						<?php if ( $video_thumb != '' ): ?>
 							<div class="thumb_wrapper" >
 								<img class="thumb_image" style="cursor: pointer;"
 								     src="<?php echo esc_attr( $video_thumb ); ?>" alt=""/>
-								<div class="playbutton <?php echo esc_attr($icon); ?>-icon"></div>
+								<div class="playbutton <?php echo $icon; ?>-icon"></div>
 							</div>
 						<?php endif; ?>
 						<div id="thevideo" style="display: block;">
 							<?php
 							$videourl = gallery_video_get_video_id_from_url( $row->image_url );
 							if ( $videourl[1] == 'youtube' ) { ?>
-								<iframe class="video_view9_img <?php echo esc_attr($iframe_thumbclass); ?>"
+								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//www.youtube.com/embed/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//www.youtube.com/embed/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							} else {
 								?>
-								<iframe class="video_view9_img <?php echo esc_attr($iframe_thumbclass); ?>"
+								<iframe class="video_view9_img <?php echo $iframe_thumbclass; ?>"
 								        width="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_width']; ?>"
 								        height="<?php echo $gallery_video_get_option['gallery_video_video_ht_view9_video_height']; ?>"
-								        src="//player.vimeo.com/video/<?php echo esc_attr($videourl[0]); ?>" style="border: 0;"
+								        src="//player.vimeo.com/video/<?php echo $videourl[0]; ?>" style="border: 0;"
 								        allowfullscreen></iframe>
 								<?php
 							}
@@ -143,7 +143,7 @@
 	</div>
 	<?php
 	$a = $disp_type;
-	if ( $a == 1 && $num < $total_videos ) {
+	if ( $a == 1 ) {
 		$gallery_video_blog_nonce = wp_create_nonce( 'gallery_video_blog_load_nonce' );
 		?>
 		<div class="load_more">
@@ -166,7 +166,7 @@
 		<div class="paginate">
 			<?php
 			$protocol    = stripos( $_SERVER['SERVER_PROTOCOL'], 'https' ) === true ? 'https://' : 'http://';
-			$actual_link = esc_attr($protocol) . esc_url($_SERVER['HTTP_HOST']) . esc_url($_SERVER['REQUEST_URI']) . "";
+			$actual_link = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "";
 			$checkREQ    = '';
 			$pattern     = "/\?p=/";
 			$pattern2    = "/&page-video[0-9]+=[0-9]+/";

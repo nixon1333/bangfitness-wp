@@ -67,15 +67,15 @@ var video_is_playing_videogallery_<?php echo $gallery_videoID; ?>=false;
                 $video_id = $thumb[0];
 			?>
 			player_<?php echo $video_row->id; ?> = new YT.Player('video_id_videogallery_<?php echo $gallery_videoID; ?>_<?php echo $key;?>', {
-				height: '<?php echo esc_attr($sliderheight); ?>',
-				width: '<?php echo esc_attr($sliderwidth); ?>',
+				height: '<?php echo $sliderheight; ?>',
+				width: '<?php echo $sliderwidth; ?>',
 				videoId: '<?php echo  $video_id;?>',
 				playerVars: {
 					'controls': <?php if ($videos[$key]->show_controls=="on"){ echo 1;}else{echo 0;} ?>,
 					'showinfo': <?php if ($videos[$key]->show_info=="on"){ echo 1;}else{echo 0;} ?>
 				},
 				events: {
-					'onStateChange': onPlayerStateChange_<?php echo esc_attr($video_row->id); ?>,
+					'onStateChange': onPlayerStateChange_<?php echo $video_row->id; ?>,
 					'loop':1
 				}
 			});
@@ -139,7 +139,7 @@ var video_is_playing_videogallery_<?php echo $gallery_videoID; ?>=false;
     }
 	?>
 	var huge_it_trans_in_progress_videogallery_<?php echo $gallery_videoID; ?> = false;
-	var huge_it_transition_duration_videogallery_<?php echo $gallery_videoID; ?> = <?php echo esc_attr($slidechangespeed);?>;
+	var huge_it_transition_duration_videogallery_<?php echo $gallery_videoID; ?> = <?php echo $slidechangespeed;?>;
 	var huge_it_playInterval_videogallery_<?php echo $gallery_videoID; ?>;
 	// Stop autoplay.
 	window.clearInterval(huge_it_playInterval_videogallery_<?php echo $gallery_videoID; ?>);

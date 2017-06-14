@@ -2,11 +2,11 @@
 
 /*
 Plugin Name: Gallery - Video Gallery
-Plugin URI: https://huge-it.com/wordpress-video-gallery/
+Plugin URI: http://huge-it.com/wordpress-video-gallery/
 Description: Video Gallery plugin was created and specifically designed to show your video files in unusual splendid ways.
-Version: 2.2.0
+Version: 2.0.4
 Author: Huge-IT
-Author URI: https://huge-it.com/
+Author URI: http://huge-it.com/
 License: GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 */
 
@@ -14,8 +14,6 @@ License: GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-
-include_once( 'config.php' );
 
 if ( ! class_exists( 'Gallery_Video' ) ) :
 
@@ -25,7 +23,7 @@ if ( ! class_exists( 'Gallery_Video' ) ) :
          * Version of plugin
          * @var float
          */
-        public $version = '2.2.0';
+        public $version = '2.0.4';
 
         /**
          * Instance of Gallery_Video_Admin class to manage admin
@@ -93,7 +91,8 @@ if ( ! class_exists( 'Gallery_Video' ) ) :
             register_activation_hook( __FILE__, array( 'Gallery_Video_Install', 'install' ) );
             add_action( 'init', array( $this, 'init' ), 0 );
             add_action( 'plugins_loaded', array($this,'load_plugin_textdomain') );
-            add_action( 'widgets_init', array( 'Gallery_Video_Widgets', 'init' ) );
+	        add_action( 'init', array( 'Gallery_Video_Install', 'db_update' ), 0 );
+
         }
 
         /**
@@ -147,8 +146,23 @@ if ( ! class_exists( 'Gallery_Video' ) ) :
         public function includes() {
             include_once( 'includes/gallery-video-functions.php' );
             include_once( 'includes/gallery-video-video-functions.php' );
+            include_once( 'includes/class-gallery-video-install.php' );
+            include_once( 'includes/class-gallery-video-template-loader.php' );
+            include_once( 'includes/class-gallery-video-ajax.php' );
+            include_once( 'includes/class-gallery-video-widgets.php' );
+            include_once( 'includes/class-gallery-video-huge-it-gallery-widget.php' );
+            include_once( 'includes/class-gallery-video-shortcode.php' );
+            include_once( 'includes/class-gallery-video-frontend-scripts.php' );
             if ( $this->is_request( 'admin' ) ) {
                 include_once( 'includes/admin/gallery-video-admin-functions.php' );
+                include_once( 'includes/admin/class-gallery-video-admin.php' );
+                include_once( 'includes/admin/class-gallery-video-admin-assets.php' );
+                include_once( 'includes/admin/class-gallery-video-general-options.php' );
+                include_once( 'includes/admin/class-gallery-video-galleries.php' );
+                include_once( 'includes/admin/class-gallery-video-lightbox-options.php' );
+                include_once( 'includes/admin/class-gallery-video-featured-plugins.php' );
+                include_once( 'includes/admin/class-gallery-video-licensing.php' );
+
             }
         }
 
@@ -167,20 +181,9 @@ if ( ! class_exists( 'Gallery_Video' ) ) :
             do_action( 'before_Gallery_Video_init' );
 
             $this->template_loader = new Gallery_Video_Template_Loader();
-
             if ( $this->is_request( 'admin' ) ) {
-
                 $this->admin = new Gallery_Video_Admin();
-
-                new Gallery_Video_Admin_Assets();
-
             }
-
-            new Gallery_Video_Frontend_Scripts();
-
-            new Gallery_Video_Ajax();
-
-            new Gallery_Video_Shortcode();
 
             // Init action.
             do_action( 'Gallery_Video_init' );

@@ -317,7 +317,7 @@ class Gallery_Video_Ajax
                         } else {
                             $thumb_pic = $row->thumb_url;
                         }
-                        $video = '<a class="vyoutube huge_it_videogallery_item group1"  href="//www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '">
+                        $video = '<a class="vyoutube huge_it_videogallery_item group1"  href="https://www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '">
                                     <img src="' . $thumb_pic . '" alt="' . $video_name . '" />
                                     <div class="play-icon ' . $videourl[1] . '-icon"></div>
                                  </a>';
@@ -386,7 +386,7 @@ class Gallery_Video_Ajax
                         } else {
                             $thumb_pic = $row->thumb_url;
                         }
-                        $video = '<a class="vyoutube huge_it_videogallery_item group1"  href="//www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '">
+                        $video = '<a class="vyoutube huge_it_videogallery_item group1"  href="https://www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '">
                                         <img  src="' . $thumb_pic . '" alt="' . $video_name . '" />
                                         <div class="play-icon ' . $videourl[1] . '-icon"></div>
                                     </a>';
@@ -439,7 +439,7 @@ class Gallery_Video_Ajax
                         } else {
                             $thumb_pic = $row->thumb_url;
                         }
-                        $video = '<a  class="vyoutube huge_it_videogallery_item group1"  href="//www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '"></a>
+                        $video = '<a  class="vyoutube huge_it_videogallery_item group1"  href="https://www.youtube.com/embed/' . $videourl[0] . '" title="' . $video_name . '"></a>
                                     <img src="' . $thumb_pic . '" alt="' . $video_name . '" />';
                     } else {
 
@@ -629,3 +629,5 @@ class Gallery_Video_Ajax
         }
     }
 }
+
+new Gallery_Video_Ajax();

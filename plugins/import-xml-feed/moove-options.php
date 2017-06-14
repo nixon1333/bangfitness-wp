@@ -20,24 +20,8 @@ class Moove_Importer_Options {
 	 */
 	function __construct() {
 		add_action( 'admin_menu', array( &$this, 'moove_importer_admin_menu' ) );
-		add_action( 'moove_importer_addons_tab_content', array( &$this, 'moove_importer_load_active_tab_view' ) );
-		add_action( 'moove_importer_buttons', array( &$this, 'moove_importer_buttons' ), 10 );
 	}
-	/**
-	 * Moove load active tab view
-	 *
-	 * @return  void
-	 */
-	function moove_importer_load_active_tab_view( $data ) {
 
-		if( $data['tab'] == 'feed_importer' ) :
-            echo Moove_Importer_View::load( 'moove.admin.settings.post_type', $data['data'] );
-        elseif(  $data['tab'] == 'plugin_addons' ):
-            echo Moove_Importer_View::load( 'moove.admin.settings.addons' , null );
-        elseif(  $data['tab'] == 'plugin_documentation' ):
-            echo Moove_Importer_View::load( 'moove.admin.settings.documentation' , null );
-        endif;
-	}
 	/**
 	 * Moove feed importer page added to settings
 	 *
@@ -71,12 +55,6 @@ class Moove_Importer_Options {
 			endforeach;
 		endif;
 		echo Moove_Importer_View::load( 'moove.admin.settings.settings_page', $data );
-	}
-
-	function moove_importer_buttons() {
-		?>
-		<a href="#" class="button button-primary moove-start-import-feed"><?php _e( 'START IMPORT' , 'moove' ); ?></a>
-		<?php
 	}
 }
 $moove_importer_options = new Moove_Importer_Options();

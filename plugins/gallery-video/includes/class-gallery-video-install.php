@@ -6,97 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Gallery_Video_Install {
 
 	/**
-	 * Check Gallery Video version and run the updater is required.
-	 *
-	 * This check is done on all requests and runs if the versions do not match.
+	 * Install  Gallery Image.
 	 */
-	public static function check_version() {
-		if(get_option( 'gallery_video_version' ) !== Gallery_Video()->version ){
-			self::install();
-			update_option( 'gallery_video_version',Gallery_Video()->version );
+	public static function install() {
+		if ( ! defined( 'GALLERY_VIDEO_INSTALLING' ) ) {
+			define( 'GALLERY_VIDEO_INSTALLING', true );
 		}
+		self::create_tables();
+		// Flush rules after install
+		flush_rewrite_rules();
+		// Trigger action
+		do_action( 'gallery_video_installed' );
 	}
-    /**
-     * Install  Gallery Image.
-     */
-    public static function install() {
-        if ( ! defined( 'GALLERY_VIDEO_INSTALLING' ) ) {
-            define( 'GALLERY_VIDEO_INSTALLING', true );
-        }
-        self::create_tables();
-
-        self::install_options();
-
-        do_action( 'gallery_video_installed' );
-    }
-
-    public static function install_options() {
-
-        if( !get_option( 'gallery_video_lightbox_type' ) ) {
-            if (!get_option( 'gallery_video_version' )) {
-                update_option( 'gallery_video_lightbox_type', 'new_type' );
-            }
-            else {
-                update_option( 'gallery_video_lightbox_type', 'old_type' );
-            }
-        }
-
-        $lightbox_new_options = array(
-            'gallery_video_lightbox_lightboxView'                               => 'view1',
-            'gallery_video_lightbox_speed_new'                                  => '600',
-            'gallery_video_lightbox_overlayClose_new'                           => 'true',
-            'gallery_video_lightbox_loop_new'                                   => 'true',
-        );
-
-        if(!get_option( 'gallery_video_lightbox_lightboxView' )) {
-            foreach ($lightbox_new_options as $name => $value) {
-                add_option( $name, $value);
-            }
-        }
-        global $wpdb;
-        if ( ! get_option( 'gallery_video_disable_right_click' ) ) {
-            update_option( 'gallery_video_disable_right_click', 'off' );
-        }
-        $imagesAllFieldsInArray = $wpdb->get_results( "DESCRIBE " . $wpdb->prefix . "huge_it_videogallery_videos", ARRAY_A );
-        $forUpdate              = 0;
-        foreach ( $imagesAllFieldsInArray as $portfoliosField ) {
-            if ( $portfoliosField['Field'] == 'thumb_url' ) {
-                $forUpdate = 1;
-            }
-        }
-        if ( $forUpdate != 1 ) {
-            $wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_videos ADD thumb_url text DEFAULT NULL" );
-        }
-        $imagesAllFieldsInArray2 = $wpdb->get_results( "DESCRIBE " . $wpdb->prefix . "huge_it_videogallery_galleries", ARRAY_A );
-        $fornewUpdate            = 0;
-        foreach ( $imagesAllFieldsInArray2 as $portfoliosField2 ) {
-            if ( $portfoliosField2['Field'] == 'display_type' ) {
-                $fornewUpdate = 1;
-            }
-        }
-        if ( $fornewUpdate != 1 ) {
-            $wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_galleries ADD display_type integer DEFAULT '2' " );
-            $wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_galleries ADD content_per_page integer DEFAULT '5' " );
-        }
-        $table_name = $wpdb->prefix . 'huge_it_videogallery_params';
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
-            $query                      = "SELECT name,value FROM " . $table_name;
-            $video_gallery_table_params = $wpdb->get_results( $query );
-        }
-        $table_name_galleries = $wpdb->prefix . "huge_it_videogallery_galleries";
-        $table_name_videos = $wpdb->prefix . "huge_it_videogallery_videos";
-        if(function_exists('issetTableColumn')) {
-            if ( ! issetTableColumn( $table_name_galleries, 'autoslide' ) ) {
-                $wpdb->query( "ALTER TABLE " . $table_name_galleries . " ADD autoslide varchar(3) DEFAULT 'on'");
-            }
-            if ( ! issetTableColumn( $table_name_videos, 'show_controls' ) ) {
-                $wpdb->query( "ALTER TABLE " . $table_name_videos . " 
-                ADD COLUMN show_controls varchar(3) DEFAULT 'on',
-                ADD COLUMN show_info varchar(3) DEFAULT 'on' " );
-            }
-        }
-    }
-
 
 	private static function create_tables() {
 		global $wpdb;
@@ -142,15 +63,15 @@ CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "huge_it_videogallery_galleries`
 INSERT INTO 
 
 `" . $table_name . "` (`id`, `name`, `videogallery_id`, `description`, `image_url`, `sl_url`, `sl_type`, `link_target`, `ordering`, `published`, `published_in_sl_width`) VALUES
-(1, 'People Are Awesome', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/yNHyTk2jYNA', 'http://huge-it.com/wordpress-video-gallery-demo-1-content-popup/#plugin_demo_wrapper', 'video', 'on', 0, 1, NULL),
-(2, 'Africa Race', '1', '<ul><li>lorem ipsumdolor sit amet</li><li>lorem ipsum dolor sit amet</li></ul><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'http://player.vimeo.com/video/62604342', 'http://huge-it.com/wordpress-video-gallery-demo-2-content-video-slider/#plugin_demo_wrapper', 'video', 'on', 1, 1, NULL),
-(3, 'London City In Motion', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'http://player.vimeo.com/video/99310168', 'http://huge-it.com/wordpress-video-gallery-demo-3-lightbox-video-gallery/#plugin_demo_wrapper', 'video', 'on', 2, 1, NULL),
-(4, 'Dubai City As You have Never Seen It Before', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><h6>Dolor sit amet</h6><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/t5vta25jHQI', 'http://huge-it.com/wordpress-video-gallery-demo-4-video-slider/#plugin_demo_wrapper', 'video', 'on', 3, 1, NULL),
-(5, 'Never say no to a Panda !', '1', '<h6>Lorem Ipsum</h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'http://player.vimeo.com/video/15371143', 'http://huge-it.com/wordpress-video-gallery-demo-5-thumbnails/#plugin_demo_wrapper', 'video', 'on', 4, 1, NULL),
-(6, 'INDO-FLU', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>', 'http://player.vimeo.com/video/103151169', 'http://huge-it.com/wordpress-video-gallery-demo-6-custom-thumbnails/#plugin_demo_wrapper', 'video', 'on', 5, 1, NULL),
-(7, 'People Are Awesome Womens Edition', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><h6>Lorem Ipsum</h6><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/R5avCAn1vs0', 'http://huge-it.com/wordpress-video-gallery-demo-7-block-style-view/#plugin_demo_wrapper', 'video', 'on', 6, 1, NULL),
-(8, 'Norwey', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'http://player.vimeo.com/video/31022539', 'http://huge-it.com/wordpress-video-gallery-demo-1-content-popup/#plugin_demo_wrapper', 'video', 'on', 7, 1, NULL),
-(9, 'Slow Motion', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'https://www.youtube.com/embed/gb69WX82Hvs', 'http://huge-it.com/wordpress-video-gallery-demo-2-content-video-slider/#plugin_demo_wrapper', 'video', 'on', 7, 1, NULL)";
+(1, 'People Are Awesome', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/yNHyTk2jYNA', 'http://huge-it.com', 'video', 'on', 0, 1, NULL),
+(2, 'Africa Race', '1', '<ul><li>lorem ipsumdolor sit amet</li><li>lorem ipsum dolor sit amet</li></ul><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'http://player.vimeo.com/video/62604342', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 1, 1, NULL),
+(3, 'London City In Motion', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'http://player.vimeo.com/video/99310168', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 2, 1, NULL),
+(4, 'Dubai City As You have Never Seen It Before', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><h6>Dolor sit amet</h6><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/t5vta25jHQI', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 3, 1, NULL),
+(5, 'Never say no to a Panda !', '1', '<h6>Lorem Ipsum</h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'http://player.vimeo.com/video/15371143', 'http://huge-it.com/', 'video', 'on', 4, 1, NULL),
+(6, 'INDO-FLU', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>', 'http://player.vimeo.com/video/103151169', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 5, 1, NULL),
+(7, 'People Are Awesome Womens Edition', '1', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><h6>Lorem Ipsum</h6><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 'https://www.youtube.com/embed/R5avCAn1vs0', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 6, 1, NULL),
+(8, 'Norwey', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'http://player.vimeo.com/video/31022539', 'http://huge-it.com/fields/order-website-maintenance/', 'video', 'on', 7, 1, NULL),
+(9, 'Slow Motion', '1', '<h6>Lorem Ipsum </h6><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p><ul><li>lorem ipsum</li><li>dolor sit amet</li><li>lorem ipsum</li><li>dolor sit amet</li></ul>', 'https://www.youtube.com/embed/gb69WX82Hvs', 'http://huge-it.com/', 'video', 'on', 7, 1, NULL)";
 
 		$table_name = $wpdb->prefix . "huge_it_videogallery_galleries";
 		$sql_3      = "
@@ -169,11 +90,50 @@ INSERT INTO `$table_name` (`id`, `name`, `sl_height`, `sl_width`, `pause_on_hove
 		if ( ! $wpdb->get_var( "select count(*) from " . $wpdb->prefix . "huge_it_videogallery_galleries" ) ) {
 			$wpdb->query( $sql_3 );
 		}
-		
+		$imagesAllFieldsInArray = $wpdb->get_results( "DESCRIBE " . $wpdb->prefix . "huge_it_videogallery_videos", ARRAY_A );
+		$forUpdate              = 0;
+		foreach ( $imagesAllFieldsInArray as $portfoliosField ) {
+			if ( $portfoliosField['Field'] == 'thumb_url' ) {
+				$forUpdate = 1;
+			}
+		}
+		if ( $forUpdate != 1 ) {
+			$wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_videos ADD thumb_url text DEFAULT NULL" );
+		}
+		$imagesAllFieldsInArray2 = $wpdb->get_results( "DESCRIBE " . $wpdb->prefix . "huge_it_videogallery_galleries", ARRAY_A );
+		$fornewUpdate            = 0;
+		foreach ( $imagesAllFieldsInArray2 as $portfoliosField2 ) {
+			if ( $portfoliosField2['Field'] == 'display_type' ) {
+				$fornewUpdate = 1;
+			}
+		}
+		if ( $fornewUpdate != 1 ) {
+			$wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_galleries ADD display_type integer DEFAULT '2' " );
+			$wpdb->query( "ALTER TABLE " . $wpdb->prefix . "huge_it_videogallery_galleries ADD content_per_page integer DEFAULT '5' " );
+		}
+		$table_name = $wpdb->prefix . 'huge_it_videogallery_params';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+			$query                      = "SELECT name,value FROM " . $table_name;
+			$video_gallery_table_params = $wpdb->get_results( $query );
+		}
 	}
 
 	/**
 	 * Update DataBase
 	 */
-
+	public static function db_update() {
+		global $wpdb;
+		$table_name_galleries = $wpdb->prefix . "huge_it_videogallery_galleries";
+		$table_name_videos = $wpdb->prefix . "huge_it_videogallery_videos";
+        if(function_exists('issetTableColumn')) {
+            if ( ! issetTableColumn( $table_name_galleries, 'autoslide' ) ) {
+                $wpdb->query( "ALTER TABLE " . $table_name_galleries . " ADD autoslide varchar(3) DEFAULT 'on'");
+            }
+	        if ( ! issetTableColumn( $table_name_videos, 'show_controls' ) ) {
+		        $wpdb->query( "ALTER TABLE " . $table_name_videos . " 
+                ADD COLUMN show_controls varchar(3) DEFAULT 'on',
+                ADD COLUMN show_info varchar(3) DEFAULT 'on' " );
+	        }
+        }
+	}
 }

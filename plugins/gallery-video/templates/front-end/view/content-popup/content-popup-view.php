@@ -1,15 +1,15 @@
-<section id="huge_it_videogallery_content_<?php echo esc_attr($gallery_videoID); ?>" class="gallery-video-content"
-         data-gallery-video-id="<?php echo esc_attr($gallery_videoID); ?>" data-gallery-video-perpage="<?php echo esc_attr($num); ?>">
-    <div id="huge_it_videogallery_container_<?php echo esc_attr($gallery_videoID); ?>"
-         class="huge_it_videogallery_container super-list variable-sizes clearfix view-<?php echo esc_attr($view_slug); ?>"
+<section id="huge_it_videogallery_content_<?php echo $gallery_videoID; ?>" class="gallery-video-content"
+         data-gallery-video-id="<?php echo $gallery_videoID; ?>" data-gallery-video-perpage="<?php echo $num; ?>">
+    <div id="huge_it_videogallery_container_<?php echo $gallery_videoID; ?>"
+         class="huge_it_videogallery_container super-list variable-sizes clearfix view-<?php echo $view_slug; ?>"
          data-show-center="<?php echo $gallery_video_get_option['gallery_video_ht_view2_content_in_center_popup']; ?>"
          data-image-behaviour="<?php echo $gallery_video_get_option['gallery_video_video_natural_size_contentpopup']; ?>">
-        <div id="huge_it_videogallery_container_moving_<?php echo esc_attr($gallery_videoID); ?>">
+        <div id="huge_it_videogallery_container_moving_<?php echo $gallery_videoID; ?>">
             <input type="hidden" class="pagenum" value="1"/>
-            <input type="hidden" id="total" value="<?php echo esc_attr($total); ?>"/>
+            <input type="hidden" id="total" value="<?php echo $total; ?>"/>
             <?php
             foreach ($page_videos as $key => $row) {
-                $link = str_replace('__5_5_5__', '%', esc_url($row->sl_url));
+                $link = str_replace('__5_5_5__', '%', $row->sl_url);
                 $descnohtml = strip_tags(str_replace('__5_5_5__', '%', $row->description));
                 $result = substr($descnohtml, 0, 50);
                 $protocol = stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true ? 'https://' : 'http://';
@@ -34,7 +34,7 @@
                             <img src="<?php echo esc_attr($thumb_pic); ?>" alt=""/>
                             <?php
                         } else {
-                            $hash = @unserialize(wp_remote_fopen($protocol."vimeo.com/api/v2/video/" . $videourl[0] . ".php"));
+                            $hash = unserialize(wp_remote_fopen($protocol."vimeo.com/api/v2/video/" . $videourl[0] . ".php"));
                             if (empty($row->thumb_url)) {
                                 $imgsrc = $hash[0]['thumbnail_large'];
                             } else {
@@ -46,7 +46,7 @@
                             <?php
                         }
                         ?>
-                        <?php if (str_replace('__5_5_5__', '%', esc_url($row->sl_url)) == '') {
+                        <?php if (str_replace('__5_5_5__', '%', $row->sl_url) == '') {
                             $viwMoreButton = '';
                         } else {
                             if ($row->link_target == "on") {
@@ -59,10 +59,10 @@
 
 
                         ?>
-                        <div class="videogallery-image-overlay"><a href="#<?php echo esc_attr($row->id); ?>"></a></div>
+                        <div class="videogallery-image-overlay"><a href="#<?php echo $row->id; ?>"></a></div>
                     </div>
                     <?php if ($row->name != '' || $link != ''): ?>
-                        <div class="title-block_<?php echo esc_attr($gallery_videoID); ?>">
+                        <div class="title-block_<?php echo $gallery_videoID; ?>">
                             <h3><?php echo str_replace('__5_5_5__', '%', $row->name); ?></h3>
                             <?php if ($gallery_video_get_option["gallery_video_ht_view2_element_show_linkbutton"] == 'on') { ?>
                                 <?php echo $viwMoreButton ?>
@@ -77,13 +77,13 @@
     </div>
     <?php
     $a = $disp_type;
-    if ($a == 1 && $num < $total_videos) {
+    if ($a == 1) {
 	    $content_popup_nonce = wp_create_nonce('gallery_video_content_popup_nonce');
         ?>
         <div class="load_more5">
             <div
                 class="load_more_button5"
-                data-content-nonce-value="<?php echo esc_attr($content_popup_nonce); ?>"><?php echo esc_attr($gallery_video_get_option['gallery_video_video_ht_view1_loadmore_text']); ?></div>
+                data-content-nonce-value="<?php echo $content_popup_nonce; ?>"><?php echo $gallery_video_get_option['gallery_video_video_ht_view1_loadmore_text']; ?></div>
             <div class="loading5"><img
                     src="<?php if ($gallery_video_get_option['gallery_video_video_ht_view1_loading_type'] == '1') {
                         echo $path_site . '/arrows/loading1.gif';
@@ -101,7 +101,7 @@
         <div class="paginate5">
             <?php
             $protocol = stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true ? 'https://' : 'http://';
-            $actual_link = esc_attr($protocol) . esc_url($_SERVER['HTTP_HOST']) . esc_url($_SERVER['REQUEST_URI']) . "";
+            $actual_link = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "";
             $checkREQ = '';
             $pattern = "/\?p=/";
             $pattern2 = "/&page-video[0-9]+=[0-9]+/";
@@ -130,16 +130,16 @@
     }
     ?>
 </section>
-<ul id="huge_it_videogallery_popup_list_<?php echo esc_attr($gallery_videoID); ?>" class="hg_video_popup">
+<ul id="huge_it_videogallery_popup_list_<?php echo $gallery_videoID; ?>" class="hg_video_popup">
     <?php
     $changePopup = 1;
     foreach ($page_videos as $key => $row) {
-        $imgurl = explode(";", esc_url($row->image_url));
-        $link = str_replace('__5_5_5__', '%', esc_url($row->sl_url));
+        $imgurl = explode(";", $row->image_url);
+        $link = str_replace('__5_5_5__', '%', $row->sl_url);
         $descnohtml = strip_tags(str_replace('__5_5_5__', '%', $row->description));
         $result = substr($descnohtml, 0, 50);
         ?>
-        <li class="pupup-element" id="huge_it_videogallery_pupup_element_<?php echo esc_attr($row->id); ?>">
+        <li class="pupup-element" id="huge_it_videogallery_pupup_element_<?php echo $row->id; ?>">
             <div class="heading-navigation">
                 <div style="display: inline-block; float: left;">
                     <div class="left-change"><a href="#<?php echo $changePopup - 1; ?>"
@@ -160,7 +160,7 @@
                         <div class="hg_iframe_class">
                             <div class="hg_iframe_class_sub"></div>
                             <iframe class="hg_iframe_class"
-                                    src="<?php  echo esc_url("//www.youtube.com/embed/". $videourl[0]); ?>" style="border: 0;"
+                                    src="//www.youtube.com/embed/<?php echo $videourl[0]; ?>" style="border: 0;"
                                     allowfullscreen></iframe>
                         </div>
                         <?php
@@ -169,7 +169,7 @@
                         <div class="hg_iframe_class">
                             <div class="hg_iframe_class_sub"></div>
                             <iframe
-                                src="<?php echo esc_url("//player.vimeo.com/video/".$videourl[0]); ?>?title=0&amp;byline=0&amp;portrait=0"
+                                src="//player.vimeo.com/video/<?php echo $videourl[0]; ?>?title=0&amp;byline=0&amp;portrait=0"
                                 style="border: 0;" allowfullscreen></iframe>
                         </div>
                         <?php

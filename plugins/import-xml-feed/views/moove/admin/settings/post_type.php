@@ -37,9 +37,7 @@
             <?php endforeach; ?>
         </select>
     <?php endif; ?>
-    <?php if ( count( $data ) ) :
-        $acf_groups = moove_importer_get_acf_groups();
-    ?>
+    <?php if ( count( $data ) ) : ?>
         <div class="moove-feed-importer-taxonomies moove-hidden">
             <div class="moove-post-fields">
                 <h4><?php _e( 'Post title' , 'moove' ); ?> *</h4>
@@ -86,140 +84,24 @@
             foreach ( $data as $post_types ) :
                 if ( count( $post_types['taxonomies'] ) ) :
                     $i = 0; ?>
-                    <div class="moove_cpt_tax_<?php echo $post_types['post_type']; ?> moove-importer-accordion moove_cpt_tax">
-                        <div class="moove-importer-accordion-header">
-                            <a href="#">
-                                <?php _e( 'Taxonomies' , 'moove'); ?>
-                            </a>
-                        </div>
-                        <!--  .moove-importer-dropdown-header -->
-                        <div class="moove-importer-accordion-content" style="display:none">
+                    <div class="moove_cpt_tax_<?php echo $post_types['post_type']; ?> moove_cpt_tax moove-hidden">
+                        <h4><?php _e( 'Taxonomies' , 'moove'); ?></h4>
+                        <?php foreach ( $post_types['taxonomies'] as $tax_name => $taxonomy ) :
+                            $i++;
+                            ?>
+                            <div class="moove-importer-taxonomy-box" data-taxonomy="<?php echo $tax_name; ?>">
+                                <p class="moove-importer-tax-title"><?php echo $taxonomy->labels->name; ?></p>
+                                <hr>
+                                <p><?php _e( 'Title' , 'moove' ); ?>: </p>
+                                <select name="moove-importer-tax-title<?php echo $i; ?>" class="moove-importer-dynamic-select moove-importer-taxonomy-title">
 
-                            <?php foreach ( $post_types['taxonomies'] as $tax_name => $taxonomy ) :
-                                $i++;
-                                ?>
-                                <div class="moove-importer-taxonomy-box" data-taxonomy="<?php echo $tax_name; ?>">
-                                    <p class="moove-importer-tax-title"><?php echo $taxonomy->labels->name; ?></p>
-                                    <hr>
-                                    <p><?php _e( 'Title' , 'moove' ); ?>: </p>
-                                    <select name="moove-importer-tax-title<?php echo $i; ?>" class="moove-importer-dynamic-select moove-importer-taxonomy-title">
-
-                                    </select>
-                                    <br />
-                                </div>
-                                <!-- moove-importer-taxonomy-box -->
-                            <?php endforeach; ?>
-                        </div>
-                        <!-- moove_cpt_tax -->
-                    </div>
-                    <!--  .moove-importer-accordion -->
-                <?php endif; ?>
-
-                <?php
-                $cf = moove_importer_generate_foods_meta_keys( $post_types['post_type'] ); ?>
-                <div class="moove_cpt_tax_<?php echo $post_types['post_type']; ?>_customfields moove-importer-accordion moove_cpt_tax">
-                    <div class="moove-importer-accordion-header">
-                        <a href="#">
-                            <?php _e( 'Custom Fields' , 'moove'); ?>
-                        </a>
-                    </div>
-                    <!--  .moove-importer-dropdown-header -->
-                    <div class="moove-importer-accordion-content" style="display:none">
-                        <div class="moove-importer-dynamic-accordion">
-                            <div class="moove-importer-customfield-rule-holder">
-                                <div class="moove-importer-taxonomy-box moove-customfield-existing moove-importer-customfield-box moove-hidden moove-initial-box-existing">
-                                    <p class="moove-importer-tax-title"><?php _e('Existing custom field box','moove'); ?><span class="moove_importer_remove_customfield_group moove_importer_remove_acf_group">remove</span></p>
-                                    <hr>
-                                    <p><?php _e( 'Select the custom field' , 'moove' ); ?>: </p>
-                                    <?php if ( is_array( $cf ) && ! empty( $cf ) ) : ?>
-                                    <select name="moove-importer-customgield-field" class="moove-customfield-dynamic-field moove-importer-customfield-type-select">
-                                            <option value='0'>Select a field</option>
-                                            <?php foreach ( $cf as $meta_value ) : ?>
-                                                <option value='<?php echo $meta_value; ?>'><?php echo $meta_value; ?></option>
-                                            <?php  endforeach; ?>
-                                        </select>
-                                    <?php endif; ?>
-
-                                    <p><?php _e( 'Select the XML field' , 'moove' ); ?>: </p>
-                                    <select name="moove-importer-tax-title<?php echo $i; ?>" class="moove-importer-dynamic-select moove-importer-taxonomy-title moove-importer-customfield-xml-select">
-
-                                    </select>
-                                    <br />
-                                </div>
-                                <!-- moove-importer-taxonomy-box -->
-
+                                </select>
+                                <br />
                             </div>
-                            <!--  .moove-importer-acf-rule-holder -->
-                            <a href="#" class="button button-primary moove_importer_add_customfield_existing">Use exiting field</a>
-                        </div>
-                        <!--  .moove-importer-dynamic-accordion -->
+                            <!-- moove-importer-taxonomy-box -->
+                        <?php endforeach; ?>
                     </div>
                     <!-- moove_cpt_tax -->
-                </div>
-                <!--  .moove-importer-accordion -->
-
-
-                <div class="moove_cpt_tax_<?php echo $post_types['post_type']; ?>_settings moove-importer-accordion moove_cpt_tax">
-                    <div class="moove-importer-accordion-header">
-                        <a href="#">
-                            <?php _e( 'Import Settings' , 'moove'); ?>
-                        </a>
-                    </div>
-                    <!--  .moove-importer-dropdown-header -->
-                    <div class="moove-importer-accordion-content" style="display:none">
-
-
-                        <div class="moove-importer-taxonomy-box">
-                            <p class="moove-importer-tax-title"><?php _e( 'Limit Posts' , 'moove' ); ?></p>
-                            <hr>
-                            <p><?php _e( 'Type the interval, or the values of your posts' , 'moove' ); ?>: </p>
-                            <input type="text" name="moove_feed_importer_limit" placeholder="Example: 1-8;10;13-" />
-                            <br />
-                        </div>
-                        <!-- moove-importer-taxonomy-box -->
-
-                    </div>
-                    <!-- moove_cpt_tax -->
-                </div>
-                <!--  .moove-importer-accordion -->
-
-                <?php
-                if ( $acf_groups ) : ?>
-                    <div class="moove_cpt_tax_<?php echo $post_types['post_type']; ?>_acf moove-importer-accordion moove_cpt_tax">
-                        <div class="moove-importer-accordion-header">
-                            <a href="#">
-                                <?php _e( 'Advanced Custom Fields' , 'moove'); ?>
-                            </a>
-                        </div>
-                        <!--  .moove-importer-dropdown-header -->
-                        <div class="moove-importer-accordion-content" style="display:none">
-                            <div class="moove-importer-dynamic-accordion">
-                                <div class="moove-importer-acf-rule-holder">
-                                    <div class="moove-importer-taxonomy-box moove-importer-acf-box moove-hidden moove-initial-box">
-                                        <p class="moove-importer-tax-title"><?php _e('ACF field box','moove'); ?><span class="moove_importer_remove_acf_group">remove</span></p>
-                                        <hr>
-                                        <p><?php _e( 'Select the ACF field' , 'moove' ); ?>: </p>
-                                        <select name="moove-importer-acf-field" class="moove-acf-dynamic-field moove-importer-acf-type-select">
-                                            <?php echo $acf_groups; ?>
-                                        </select>
-
-                                        <p><?php _e( 'Select the XML field' , 'moove' ); ?>: </p>
-                                        <select name="moove-importer-tax-title<?php echo $i; ?>" class="moove-importer-dynamic-select moove-importer-taxonomy-title moove-importer-acf-xml-select">
-
-                                        </select>
-                                        <br />
-                                    </div>
-                                    <!-- moove-importer-taxonomy-box -->
-                                </div>
-                                <!--  .moove-importer-acf-rule-holder -->
-
-                                <a href="#" class="button button-primary moove_importer_add_acf_rule">Add new rule</a>
-                            </div>
-                            <!--  .moove-importer-dynamic-accordion -->
-                        </div>
-                        <!-- moove_cpt_tax -->
-                    </div>
-                    <!--  .moove-importer-accordion -->
                 <?php endif;
             endforeach; ?>
         </div>
@@ -227,7 +109,7 @@
     <?php endif;?>
     <div class="moove-submit-btn-cnt moove-hidden">
         <br />
-        <?php do_action( 'moove_importer_buttons', $buttons ); ?>
+        <a href="#" class="button button-primary moove-start-import-feed"><?php _e( 'START IMPORT' , 'moove' ); ?></a>
     </div>
     <!-- moove-submit-btn-cnt -->
 </div>
@@ -285,3 +167,7 @@
     <!-- moove-feed-xml-preview -->
 </div>
 <!-- moove-feed-importer-from -->
+
+
+
+

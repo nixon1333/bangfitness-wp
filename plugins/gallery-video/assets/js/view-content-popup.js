@@ -60,7 +60,6 @@ function Gallery_Video_Content_Popup(id) {
                 }
             }
         };
-        galleryVideoIsotope(_this.container.children().first());
         galleryVideoIsotope(_this.container.children(), options);
     };
     _this.showCenter = function () {
@@ -83,7 +82,7 @@ function Gallery_Video_Content_Popup(id) {
                 "overflow": "hidden"
             });
             var loadInterval = setInterval(function () {
-                galleryVideoIsotope(_this.container.children(), 'layout');
+                galleryVideoIsotope(_this.container.children(), 'reLayout');
             }, 100);
             setTimeout(function () {
                 clearInterval(loadInterval);
@@ -237,7 +236,7 @@ function Gallery_Video_Content_Popup(id) {
     _this.resizeEvent = function () {
         var iframeHeight = jQuery('body').width() * 0.23;
         _this.popupList.find('.popup-wrapper .image-block iframe').height(iframeHeight);
-        galleryVideoIsotope(_this.container.children(), 'layout');
+        galleryVideoIsotope(_this.container.children(), 'reLayout');
         _this.showCenter();
 
     };
@@ -295,13 +294,11 @@ function Gallery_Video_Content_Popup(id) {
                 if (response.success) {
                     var $objnewitems = jQuery(response.output);
                     var popupNewItems = response.output_popup;
-                    _this.container.children().first().append($objnewitems);
-                  galleryVideoIsotope(_this.container.children().first());
+                    _this.container.children().append($objnewitems);
                     setTimeout(function () {
-
                         galleryVideoIsotope(_this.container.children().first(), 'reloadItems');
                         galleryVideoIsotope(_this.container.children().first(), {sortBy: 'original-order'});
-                        galleryVideoIsotope(_this.container.children().first(), 'layout');
+                        galleryVideoIsotope(_this.container.children().first(), 'reLayout');
                     }, 100);
                     _this.popupList.append(popupNewItems);
                     _this.container.children().find('img').on('load', function () {

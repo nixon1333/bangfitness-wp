@@ -28,7 +28,7 @@ $huge_it_gallery_video_nonce_remove_gallery_video = wp_create_nonce( 'huge_it_ga
 				}
 				$serch_fields = '<div class="alignleft actions"">
 				<label for="search_events_by_title" style="font-size:14px">Search Gallery Video: </label>
-					<input type="text" name="search_events_by_title" value="' . esc_attr($serch_value) . '" id="search_events_by_title" onchange="clear_serch_texts()">
+					<input type="text" name="search_events_by_title" value="' . $serch_value . '" id="search_events_by_title" onchange="clear_serch_texts()">
 			</div>
 			<div class="alignleft actions">
 				<input type="button" value="Search" onclick="document.getElementById(\'page_number\').value=\'1\'; document.getElementById(\'serch_or_not\').value=\'search\';
@@ -45,8 +45,6 @@ $huge_it_gallery_video_nonce_remove_gallery_video = wp_create_nonce( 'huge_it_ga
 								class="sorting-indicator"></span></th>
 						<th scope="col" id="name" style="width:85px"><span>Name</span><span
 								class="sorting-indicator"></span></th>
-                        <th scope="col" id="shortcode" style="width:85px"><span>Shortcode</span><span
-                                    class="sorting-indicator"></span></th>
 						<th scope="col" id="prod_count" style="width:40px;"><span>Videos</span><span
 								class="sorting-indicator"></span></th>
 						<th style="width:40px"><span>Duplicate</span><span
@@ -119,24 +117,21 @@ $huge_it_gallery_video_nonce_remove_gallery_video = wp_create_nonce( 'huge_it_ga
 							$pr_count = 0;
 						}
 						$huge_it_video_nonce_duplicate_gallery = wp_create_nonce('huge_it_gallery_video_nonce_duplicate_gallery'.$rows[$i]->id);
+						$gallery_video_wp_nonce                = wp_create_nonce( 'huge_it_gallery_video_nonce' . $rows[ $i ]->id);
 						?>
 						<tr <?php if ( $trcount % 2 == 0 ) {
 							echo 'class="has-background"';
 						} ?>>
 							<td><?php echo $rows[ $i ]->id; ?></td>
 							<td>
-								<a href="admin.php?page=video_galleries_huge_it_video_gallery&task=edit_cat&id=<?php echo $rows[ $i ]->id; ?>"><?php echo esc_html( stripslashes( $rows[ $i ]->name ) ); ?></a>
+								<a href="admin.php?page=video_galleries_huge_it_video_gallery&task=edit_cat&id=<?php echo $rows[ $i ]->id; ?>&huge_it_gallery_video_nonce=<?php echo $gallery_video_wp_nonce; ?>"><?php echo esc_html( stripslashes( $rows[ $i ]->name ) ); ?></a>
 							</td>
-                            <td>
-                                [huge_it_videogallery id="<?php echo $rows[ $i ]->id; ?>"]
-                            </td>
 							<td>(<?php if ( ! ( $pr_count ) ) {
 									echo '0';
 								} else {
 									echo $rows[ $i ]->prod_count;
 								} ?>)
 							</td>
-
 							<td>
 								<a href="admin.php?page=video_galleries_huge_it_video_gallery&task=duplicate_gallery_video&id=<?php echo $rows[ $i ]->id; ?>&gallery_video_duplicate_nonce=<?php echo $huge_it_video_nonce_duplicate_gallery; ?>" class="duplicate-link"><span class="duplicate-icon"></span></a>
 							</td>
