@@ -1,0 +1,135 @@
+header.site-main{
+	@include h2;
+	@include header-height;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 200;
+	background: $charcoal;
+	padding: 0 $site-pad-half;
+	a, span{
+		transition: color .5s;
+	}
+	.brand{
+		position: relative;
+		z-index: 2;
+		color: white;
+		height: $header-height;
+		line-height: $header-height;
+		@include breakpoint(medium){
+			height: $header-height * 0.95;
+		}
+		span{
+			color: $bright-orange;
+		}
+		&:hover{
+			span{
+				color: white;
+			}
+		}
+	}	
+	nav{
+		margin-top: $site-pad-half;
+		&.main-menu{
+			a{
+				color: $bright-orange;
+				&:hover{
+					color: white;
+				}
+			}	
+		}
+		&.extras{
+			a{
+				color: $deep-yellow;
+				&:hover{
+					color: white;
+				}
+			}
+		}
+	}
+	.lower{
+		display: none;
+		@include h2;
+		position: fixed;
+		top: $header-height;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 0 $site-pad-half;	
+		.menu-open & {
+			display: block;
+		}
+	}
+	.underlay{
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+	.mobile-toggle{
+		position: absolute;
+	  top: 52.5%;
+	  right: -0.05rem;
+		background: none;
+		transform: scale(0.95) translateY(-50%);
+		transform-origin: top right;
+		span{
+			.menu-open &{
+				background: 0 0;
+			}
+			&, &:before, &:after{
+				background: $bright-orange;
+			}
+		}
+	}
+	@include breakpoint(large){
+		nav{
+			display: block;
+			float: left;
+			height: $header-height-desktop;
+			line-height: $header-height;
+			margin-top: 0;
+			border-left: 1px solid $light-charcoal;
+			li a{
+				// Cheat 'em'
+				padding: 0 $site-pad-quarter * 0.8;
+			}
+			li:first-child a{
+				padding-left: $site-pad-half;
+			}
+		}
+		.extras{
+			float: right;
+			.sign-up-trigger{
+				color: white;
+				border-radius: 3px;
+				padding: .4em .5em .25em;
+				line-height: 1.05;
+				background: $bright-orange;
+				color: white;
+				font-size: 26px;
+				transition: background-color .5s, color .5s;
+				&:hover{
+					color: $charcoal;
+					background: $deep-yellow;
+				}
+			}
+		}
+		li{
+			display: inline-block;
+		}
+		.mobile-toggle{
+			display: none;
+		}
+		.lower{
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding-left: 8rem;
+		}
+	}
+}

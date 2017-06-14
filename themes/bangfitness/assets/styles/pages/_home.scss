@@ -1,0 +1,267 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.home.page{
+	.wrap.container{
+		padding-top: $header-height-desktop;
+	}
+	#about-anchor span{
+		display: block;
+		margin-top: -($header-height) + .2rem;
+		padding-bottom: $header-height;
+	}
+	.home-slider{
+		position: relative;
+		height: 100vh;
+		height: calc(100vh - #{$header-height-desktop});
+		overflow: hidden;
+		&, .slides, .slides li{
+			height: 100vh;
+			height: calc(100vh - #{$header-height-desktop});
+		}
+		.slides li{
+			position: relative;
+			background-size: cover;
+			background-position: center center;
+			&:after{
+	      content: '';
+	      display: block;
+	      position: absolute;
+	      top: 0;
+	      left: 0;
+	      right: 0;
+	      bottom: 0;
+	      transform: translate3d(0,0,0);
+				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&amp;0+0,0.65+100 */
+				background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* IE10+ */
+				background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
+				z-index: 10;
+				pointer-events: none;
+			}
+		}
+		.overlay{
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+		.testimonial{
+			position: absolute;
+			bottom: $site-pad-half;
+			left: $site-pad-half;
+			right: $site-pad-half;
+			color: white;
+			z-index: 30;
+			transform: translateZ(0);
+			@include breakpoint(medium){
+				max-width: $content-width / 2;
+				bottom: $site-pad;
+				left: $site-pad;
+				right: $site-pad;
+			}
+		}
+		.text{
+			margin-bottom: .7em;
+		}
+		.name{
+			position: relative;
+			@include h3;
+			color: $bright-orange;
+			padding-left: 3.5rem;
+			&:before{
+				content: '';
+				display: block;
+				position: absolute;
+				top: 0.05rem;
+				left: 0;
+				bottom: 0;
+				width: 2.35rem;
+				background: url(../images/quotemark.svg) no-repeat top center;
+				background-size: contain;
+			}
+		}
+	}
+	.flexslider{
+		border: 0;
+		margin: 0;
+		background: none;
+		.flex-direction-nav a,
+		.flex-direction-nav:hover a{
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 60px;
+			height: 60px;
+			.touch & {
+				.flex-direction-nav .flex-disabled {
+					opacity: 1 !important;
+				}
+
+			}
+			&.flex-prev{
+				left: 2%;
+			}
+			&.flex-next{
+				right: 2%;
+			}
+			&.flex-prev, &.flex-next{
+				&:before{
+					content: none;
+				}
+			}
+		}
+	}
+	.about{
+		.upper{
+			@include site-wrap;
+			p:nth-of-type(1){
+				margin-bottom: 0;
+			}
+			.button-wrap{
+				text-align: center;
+			}
+		  button{
+		    @include button($deep-yellow, $charcoal);
+		  }
+		}
+		.accordion{
+			@include plain-accordion;
+		}
+	}
+	.team{
+		@include site-wrap;
+		@include clearfix;
+		.page-title{
+			border-bottom: 1px solid white;
+			margin-bottom: 0;
+			padding-bottom: $site-pad-half - 0.25rem;
+			@include breakpoint(medium){
+				padding-bottom: $site-pad - 0.5rem;
+			}
+		}
+		.team-member{
+			@include clearfix;
+			padding: $site-pad-half 0;
+			border-top: 1px solid white;
+			cursor: pointer;
+			@include breakpoint(medium){
+				border-top: 0;
+				&:nth-child(even){
+					clear: left;
+				}
+			}
+			&:first-of-type{
+				border-top: 0;
+			}
+			.portrait{
+				padding-bottom: 30%;
+				float: left;
+				width: 30%;
+			}
+			.info{
+				float: right;
+				width: 70%;
+				padding-left: $site-pad-half;
+				@include breakpoint(medium){
+					padding-left: $site-pad;
+				}
+			}
+			.name{
+				@include h3;
+				padding-bottom: .05em;
+			}
+			.desc{
+				@include small-font;
+				margin-bottom: 0;
+				color: white;
+			}
+			@include breakpoint(medium){
+				float: left;
+				width: 50%;
+				&:nth-child(odd){
+					padding-left: $site-pad-half;
+				}
+				&:nth-child(even){
+					padding-right: $site-pad-half;
+				}
+			}
+		}
+		.team-member-modal{
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: $silver;
+			border: 1px solid $charcoal;
+	  	transition: z-index .25s, opacity .25s;
+	  	min-width: 300px;
+	  	z-index: 20;
+	  	max-height: 90vh;
+	  	overflow: auto;
+	  	&.fade-out{
+	  		animation-name: none;
+	  		opacity: 0;
+	  		z-index: -1;
+		  	transition: z-index .25s .25s, opacity .25s;
+	  	}
+			.trigger{
+				@include trigger-modal-close;
+			}
+			.inner{
+				padding: $site-pad-half;
+				padding-right: 60px;
+				h1{
+					@include h1;
+					margin-bottom: ($site-pad-half / 2);
+				}
+				p{
+					&:last-child{
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+	}
+	.email-modal{
+		@include modal;
+  	display: block;
+  	//animation-fill-mode: both;
+		//animation-duration: 1s;
+  	//animation-name: fadeIn;
+  	//animation-delay: 2s;
+  	transition: z-index .25s, opacity .25s;
+  	&.fade-out{
+  		animation-name: none;
+  		opacity: 0;
+  		z-index: -1;
+		  transition: z-index .25s .25s, opacity .25s;
+  	}
+  	label{
+  		display: block;
+  		overflow: hidden;
+  		height: 0;
+  	}
+		input[type=submit]{
+			@include button($deep-yellow, $charcoal);
+			padding-top: 0;
+			position: absolute;
+			padding-bottom: 0;
+			top: 0;
+			right: 0;
+			line-height: $header-height * 0.95 !important;
+		}
+		.response{
+			margin-top: $site-pad-half;
+			font-size: 0.9em;
+		}
+	}
+}

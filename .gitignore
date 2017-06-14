@@ -1,0 +1,11 @@
+# wp
+uploads/
+upgrade/
+index.php
+
+# ours
+node_modules
+bower_components
+themes/*
+!themes/bangfitness
+themes/bangfitness/dist

@@ -1,0 +1,41 @@
+.page.classes{
+	.classes{
+		@include image-accordion;
+		.section h2{
+			padding-bottom: $site-pad-quarter;
+		}
+		.description{
+			margin-bottom: -.1rem;
+		}
+	}
+	time{
+		@include small-caps;
+		br{
+			display: block;
+			overflow: hidden;
+			height: 0;
+			content: '';
+			margin-top: -0.45em;
+			@include breakpoint(medium){
+				margin-top: -0.1em;
+			}
+		}
+	}
+	.instructor{
+		.head{
+			margin-bottom: .2rem;
+		}
+		h6{
+			@include h3;	
+		}
+		.left{
+			float: left;
+		}
+		.portrait{
+			float: left;
+			width: 2.75rem;
+			padding-bottom: 2.75rem;
+			margin-left: $site-pad-half;
+		}
+	}
+}

@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "main.js": {
+      "files": [
+        "scripts/main.js"
+      ],
+      "main": true
+    },
+    "main.css": {
+      "files": [
+        "styles/main.scss"
+      ],
+      "main": true
+    },
+    "flexslider.css": {
+      "files": [
+        "../bower_components/flexslider/flexslider.css"
+      ],
+      "main": true
+    },
+    "editor-style.css": {
+      "files": [
+        "styles/editor-style.scss"
+      ]
+    },
+    "modernizr.js": {
+      "bower": ["modernizr"]
+    },
+    "flexslider.js": {
+      "bower": ["flexslider"]
+    }
+  },
+  "config": {
+    "devUrl": "http://www.bangfitness.dev"
+  }
+}

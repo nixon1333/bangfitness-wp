@@ -1,0 +1,398 @@
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+@mixin breakpoint($point) {
+  @if $point == small {
+    @media (min-width: 500px)  { @content; }
+  }
+  @else if $point == medium {
+    @media (min-width: 700px) { @content; }
+  }
+  @else if $point == large {
+    @media (min-width: 1200px) { @content; }
+  }
+  @else if $point == xlarge {
+    @media (min-width: 1400px) { @content; }
+  }
+  @else if $point == huge {
+    @media (min-width: 1800px) { @content; }
+  }
+  @else if $point == colossal {
+    @media (min-width: 2100px) { @content; }
+  }
+  @else if $point { // allows custom breakpoints
+    @media (min-width: $point) { @content; }
+  }
+}
+@mixin site-wrap(){
+  max-width: $content-width;
+  margin: 0 auto;
+  padding-left: $site-pad-half;
+  padding-right: $site-pad-half;
+  @include breakpoint(medium){
+    padding-left: $site-pad;
+    padding-right: $site-pad;
+  }
+}
+@mixin site-wrap-full(){
+  @include site-wrap;
+  padding: 0;
+  @include breakpoint(medium){
+    padding: 0;
+  }
+}
+@mixin header-height(){
+  height: $header-height;
+  line-height: $header-line-height;
+  padding-top: 0;
+  padding-bottom: 0;
+  @include breakpoint(medium){
+    height: $header-height-desktop;
+  }
+}
+@mixin h1(){
+  font-family: 'Druk Web';
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  font-size: 2rem;
+  line-height: 2rem;
+  @include breakpoint(medium){
+    font-size: 2.75rem;
+    line-height: 2.75rem;
+  }
+}
+@mixin h2(){
+  @include h1;
+  letter-spacing: 0.05em;
+  font-size: 2rem;
+  line-height: 2rem;
+  @include breakpoint(medium){
+    font-size: 1.35rem;
+    line-height: 1.35rem;
+  }
+}
+@mixin h3(){
+  @include h2;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+  @include breakpoint(medium){
+    font-size: 1.35rem;
+    line-height: 1.35rem;
+  }
+}
+@mixin page-title{
+  @include h1;
+  padding: $site-pad-half 0 ($site-pad-half * 0.75);
+  @include breakpoint(medium){
+    padding: ($site-pad * 0.9) 0 ($site-pad * 0.765);
+  }
+}
+.page-title{
+  @include page-title;
+}
+@mixin small-caps(){
+  font-family: 'GrotesqueMTStd-BoldExtended';
+  font-size: 0.7rem;
+  line-height: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  @include breakpoint(medium){
+    font-size: 0.925rem;
+  }
+}
+.small-caps{
+  @include small-caps;
+}
+@mixin body-font(){
+  font-size: 1rem;
+  line-height: (1.35 / 1.6)rem;
+  @include breakpoint(medium){
+    font-size: 1.25rem;
+  }
+}
+@mixin small-font(){
+  font-size: 1rem;
+  line-height: (1.35 / 1.6)rem;
+}
+@mixin button($color: $charcoal, $background: $deep-yellow, $invert: false){
+  @include h3;
+  border: 3px solid $background;
+  padding: .5em .5em .425em;
+  transition: background-color .25s, color .25s;
+  cursor: pointer;
+  @if ($invert == true){
+    background: transparent;
+    color: $color;
+    border-color: $color;
+  } @else {
+    background: $background;
+    color: $color;
+  }
+  &:hover{
+    background: $color;
+    color: $background;
+  }
+}
+@mixin first-line(){
+  .small-caps{
+    @include small-caps;
+  }
+}
+@mixin trigger(){
+  position: absolute;
+  top: $site-pad-half;
+  right: $site-pad-half;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  transform: rotate(90deg);
+  transform-origin: center center;
+  transition: transform .25s;
+  svg{
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: opacity .25s;
+    fill: white;
+    &:last-child{
+      transform: rotate(90deg);
+    }
+  }
+  @include breakpoint(medium){
+    top: $site-pad;
+    right: $site-pad;
+    &, svg{
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}
+@mixin trigger-modal-close(){
+  @include trigger;
+  top: $site-pad-half;
+  right: $site-pad-half;
+  transform: rotate(45deg);
+  svg{
+    fill: $charcoal;
+  }
+  @include breakpoint(medium){
+    top: $site-pad-half;
+    right: $site-pad-half;
+  }
+}
+@mixin accordion(){
+  .trigger{
+    @include trigger;
+  }
+  .section{
+    position: relative;
+    color: white;
+    overflow: hidden;
+    &:after{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 33vh;
+      z-index: 0;
+    }
+    // Trigger state
+    &.open .trigger{
+      transform: rotate(0);
+      svg{
+        &:last-child{
+          opacity: 0;
+        }
+      }
+    }
+    // End trigger
+    h2{
+      @include h1;
+      @include page-title;
+      padding-right: 2rem !important;
+      cursor: pointer;
+      @include breakpoint(medium){
+        height: auto;
+      }
+    }
+    .inner{
+      @include site-wrap;
+      position: relative;
+      z-index: 1;
+    }
+    p{
+      @include first-line;
+    }
+  }
+}
+@mixin plain-accordion{
+  @include accordion;
+  @include site-wrap-full;
+  .section{
+    .info{
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .5s;
+    }
+    .inner{
+      overflow: hidden;
+    }
+    &.open .info{
+      max-height: 1000px;
+    }
+    &:nth-child(4n + 1){
+      background: $bright-orange;
+      color: $charcoal;
+      a, h2, .trigger, .colored, svg{
+        fill: white;
+        color: white;
+      }
+    }
+    &:nth-child(4n + 2){
+      background: $charcoal;
+      color: white;
+      a, h2, .trigger, .colored, svg{
+        fill: $bright-orange;
+        color: $bright-orange;
+      }
+    }
+    &:nth-child(4n + 3){
+      background: $silver;
+      color: $charcoal;
+      a, h2, .trigger, .colored, svg{
+        fill: $bright-orange;
+        color: $bright-orange;
+      }
+    }
+    &:nth-child(4n + 4){
+      background: $deep-yellow;
+      color: $charcoal;
+      a, h2, .trigger, .colored, svg{
+        fill: white;
+        color: white;
+      }
+    }
+  }
+}
+@mixin image-accordion{
+  @include accordion;
+  .bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 170vh;
+    background-size: cover;
+    background-position: top center;
+    /* &:after{
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: fade-out($charcoal, 0.75);
+    } */
+    &:before{
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0);
+      background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,0,0,0)), color-stop(100%, rgba(0,0,0,1)));
+      background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      background: -o-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );    }
+  }
+  .info{
+    padding: $site-pad-half 0;
+    @include breakpoint(medium){
+      padding: $site-pad 0;
+    }
+  }
+  .upper{
+    @include site-wrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+  }
+  .inner{
+    padding-top: 33vh;
+  }
+  .section{
+    max-height: 33vh;
+    overflow: hidden;
+    transition: max-height .5s;
+    padding-bottom: $site-pad-half;
+    @include breakpoint(medium){
+      padding-bottom: $site-pad;
+    }
+    &.open{
+      max-height: 200vh;
+    }
+    &:nth-child(odd):before,
+    &:nth-child(odd):after{
+      background: -moz-linear-gradient(top,  rgba(255,102,51,0.25) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,102,51,0.25)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  rgba(255,102,51,0.25) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  rgba(255,102,51,0.25) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  rgba(255,102,51,0.25) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  rgba(255,102,51,0.25) 0%,rgba(255,255,255,0) 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40ff6633', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+    }
+    &:nth-child(even):before,
+    &:nth-child(even):after{
+      background: -moz-linear-gradient(top,  rgba(254,193,13,0.25) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(254,193,13,0.25)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  rgba(254,193,13,0.25) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  rgba(254,193,13,0.25) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  rgba(254,193,13,0.25) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  rgba(254,193,13,0.25) 0%,rgba(255,255,255,0) 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40fec10d', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+    }
+  }
+}
+@mixin modal(){
+  display: none;
+  position: absolute;
+  width: $modal-width;
+  padding: $site-pad-half;
+  max-width: 90%;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: $deep-yellow;
+  h1{
+    @include h1;
+    margin-bottom: $site-pad-half;
+  }
+  form{
+    position: relative;
+    margin-top: $site-pad-quarter;
+  }
+  .trigger{
+    @include trigger-modal-close;
+  }
+  @include breakpoint(medium){
+    position: fixed;
+  }
+}
