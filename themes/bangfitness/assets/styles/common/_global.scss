@@ -104,6 +104,9 @@ input[type=submit]{
 	width: 100%;
 	min-height: 100%;
 	transform: none;
+	[data-drip-attribute="headline"] {
+		display: none;
+	}
 	input[type=submit]{
 		@include button($silver, $charcoal);
 		margin-bottom: 0;
@@ -118,10 +121,14 @@ input[type=submit]{
 	form > p{
 		margin-bottom: 0;
 	}
-	.wpcf7-form-control-wrap{
+	.contact-form-row{
 		display: block;
 		position: relative;
-		padding-right: 5rem;	
+		padding-right: 4.5rem;
+		margin-bottom: 1.5em;
+		label{
+			display: none;
+		}
 		.indicator{
 			content: '';
 			display: block;
