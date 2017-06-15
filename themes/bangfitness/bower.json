@@ -10,7 +10,9 @@
     "modernizr": "2.8.2",
     "flexslider": "~2.5.0",
     "jquery.cookie": "~1.4.1",
-    "jquery-cookie": "~1.4.1"
+    "jquery-cookie": "~1.4.1",
+    "jquery": "^3.2.1",
+    "jquery-form": "^4.2.1"
   },
   "overrides": {
     "flexslider": {
