@@ -36,6 +36,6 @@
     }
   },
   "config": {
-    "devUrl": "http://www.bangfitness.dev"
+    "devUrl": "http://192.168.33.10/wp/"
   }
 }
