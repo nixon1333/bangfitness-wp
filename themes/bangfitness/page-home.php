@@ -44,6 +44,10 @@
 	</div>
 </section>
 <section class="team">
+   
+    
+    <?php echo do_shortcode('[hc-hmw snippet="wwk-schedule"]'); ?>
+    
 	<h1 class="page-title">Team</h1>
 	<?php if( have_rows('team_members') ): ?>
 		<?php while ( have_rows('team_members') ) : the_row(); ?>

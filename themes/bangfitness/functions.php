@@ -28,3 +28,4 @@ foreach ($sage_includes as $file) {
   require_once $filepath;
 }
 unset($file, $filepath);
+add_filter('widget_text', 'do_shortcode');
