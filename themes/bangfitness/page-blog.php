@@ -1,6 +1,6 @@
 <?php use Roots\Sage\Utils; ?>
 <?php //get_template_part('templates/page', 'header'); ?>
-<?php 
+<?php
 $blog_query = new WP_Query(array(
 	'post_type' => 'post',
 	'orderby' => 'date',
@@ -8,14 +8,14 @@ $blog_query = new WP_Query(array(
 	'posts_per_page' => -1
 ));
 ?>
-    
+
     <section class="blog-posts" id='blog-articles'>
         <?php if ( is_active_sidebar( 'sidebar-featured-blog' ) ) { ?>
 	<section id="sidebar-featured-blog">
 		<?php dynamic_sidebar( 'sidebar-featured-blog' ); ?>
 	</section>
         <?php } ?>
-        <?php get_template_part('templates/featured-posts'); ?>        
+        <?php get_template_part('templates/featured-posts'); ?>
             <?php if( $blog_query->have_posts() ): ?>
                     <?php while ( $blog_query->have_posts()) : $blog_query->the_post(); ?>
                     <article class="section blog-post">
@@ -31,7 +31,7 @@ $blog_query = new WP_Query(array(
                             <time><?php echo get_the_date('F j Y'); ?></time>
                             <?php the_excerpt(); ?>
                         </div>
-                        
+
                         <div class='category-color'>&nbsp;</div>
                     </article>
                     <!-- <hr />-->
